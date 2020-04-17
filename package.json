@@ -1,0 +1,27 @@
+{
+  "name": "client-construction-tool",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config build/webpack.build.dev.config"
+  },
+  "author": "wangxiongbo",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "@vue/cli-plugin-babel": "~4.2.0",
+    "@vue/cli-plugin-eslint": "~4.2.0",
+    "@vue/cli-service": "~4.2.0",
+    "axios": "^0.19.2",
+    "babel-loader": "^8.1.0",
+    "qs": "^6.9.0",
+    "uuid": "^7.0.3",
+    "vue": "^2.6.11",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-merge": "^4.2.2"
+  }
+}
