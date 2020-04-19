@@ -29,7 +29,7 @@ const interceptors_reponse = (response) =>{
  * @description axios reponse error 拦截器
  */
 const interceptors_reponse_error = (error) => {
-    return error
+   return Promise.reject(error)
 }
 /**
  * @description 封装axios 请求方案  
@@ -51,11 +51,11 @@ class HttpServer {
             serverWarning,
             isAgainHttp = false, 
             againHttp,
-            max_again = 2,
-            max_again_time = 2000,
-            inatance_interceptors_request,
-            inatance_interceptors_reponse,
-            inatance_interceptors_reponse_error
+            // max_again = 2,
+            // max_again_time = 2000,
+            inatance_interceptors_request = interceptors_request ,
+            inatance_interceptors_reponse = interceptors_reponse,
+            inatance_interceptors_reponse_error = interceptors_reponse_error
         } = {} ){
         /**
          * @description 请求最大数量 默认为10 超过此数量会再当前任务队列执行完成后 执行
@@ -95,43 +95,30 @@ class HttpServer {
         this.inatance = axios.create({
             baseURL:baseUrl,
             timeout:timeout,
-            headers:headers
+            headers:headers,
         })
+        
         this._max_while = 0,
         /**
          * @description axios request请求拦截器
          */
-        this.inatance_interceptors_request = inatance_interceptors_request || interceptors_request
-        /**
-         * @description axios response返回拦截器
-         */
-        this.inatance_interceptors_reponse = inatance_interceptors_reponse || interceptors_reponse
-        /**
-         * @description axios response 请求错误拦截器
-         */
-        this.inatance_interceptors_reponse_error = inatance_interceptors_reponse_error || interceptors_reponse_error
-    }
-    interceptors(inatance,args){
-        inatance.interceptors.request.use(config => {
-            // 判断是否有 request 拦截器 如果有 外部调用返回 没有 直接返回
-          return this.inatance_interceptors_request(config) 
+        this.inatance.interceptors.request.use((config)=>{
+            return inatance_interceptors_request(config)
         })
-        inatance.interceptors.response.use(response => {
-            // 响应成功删除任务队列中得任务
-            this.destroy(args._id)
-            return this.inatance_interceptors_reponse(response)
-        }, error => {
-            this.destroy(args._id)            
-            return this.inatance_interceptors_reponse_error(error)
-        })
-        return inatance
+        /**
+         * @description axios reponse 拦截器
+         */
+        this.inatance.interceptors.response.use( (response)=> {
+            return inatance_interceptors_reponse(response)
+        }, function (error) {
+            return inatance_interceptors_reponse_error(error);
+        });
     }
     /**
      * @description 请求axios
      */
     server(args){
-        let instance = this.interceptors(this.inatance,args)
-        return  instance({...args})
+        return  this.inatance({...args})
     }
     /**
      * @description http server request 请求方案
@@ -143,25 +130,23 @@ class HttpServer {
            const task = this.createHttpTask(args,resolve, reject)
             // 如果当前执行任务总数 大于 当前最大并发http请求 那么推入队列 以待下次执行
             this._taskQueue.push(new TaskHttpRequest({task:task,endTime:new Date().getTime(),args:args}))       
-              
             while (this._taskQueue.length){
                 const firstTask = this._taskQueue.shift()
                 firstTask._inatance()
-                
+                this.destroy(args._id)            
+
             }
         })
-    
     }
     /**
      * @description 销毁任务队列中得http请求 
-     * 如何根据条件来判断唯一 预期做法是id 但是id 没办法带入到拦截器
+     * 如何根据条件来判断唯一 
      */
     destroy(id){
       let index = this._taskQueue.findIndex(task=>task._args._id === id)
       if (index !== -1 ){
         this._taskQueue.splice(index,1)
       }
-
     }
     /**
      * @description 创建异步任务 等待推入 http 任务队列中

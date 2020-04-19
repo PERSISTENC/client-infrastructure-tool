@@ -1,8 +1,24 @@
-# 客户端 基建工具
+# client-construction-tool2
 
-## server 
-服务端
-## components
-进一步封装得业务组件
-## utils
-常用工具集合
+## Project setup
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
