@@ -7,7 +7,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "prerelease": "npm version prerelease && npm run build && npm publish"
+    "prerelease": "npm prerelease",
+    "publish":"npm publish"
   },
   "dependencies": {
     "axios": "^0.19.2",
