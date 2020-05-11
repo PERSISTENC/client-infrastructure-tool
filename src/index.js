@@ -1,5 +1,5 @@
 import HttpServer from './server/server.js'
-
+import * as Module from './modules/index.js'
 const Server = {
     HttpServer
 }
@@ -14,5 +14,6 @@ const Utils = {
 export {
     Server,
     Components,
-    Utils
+    Utils,
+    Module
 }

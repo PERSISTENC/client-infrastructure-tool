@@ -6,11 +6,13 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "prerelease": "npm version prerelease && npm run build && npm publish"
   },
   "dependencies": {
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
+    "js-base64": "^2.5.2",
     "vue": "^2.6.11"
   },
   "devDependencies": {

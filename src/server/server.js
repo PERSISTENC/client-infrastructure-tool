@@ -140,7 +140,7 @@ class HttpServer {
     }
     /**
      * @description 销毁任务队列中得http请求 
-     * 如何根据条件来判断唯一 
+     * 根据条件 id 来判断唯一 
      */
     destroy(id){
       let index = this._taskQueue.findIndex(task=>task._args._id === id)
