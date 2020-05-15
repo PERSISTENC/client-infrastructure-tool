@@ -51,6 +51,7 @@ class HttpServer {
             serverWarning,
             isAgainHttp = false, 
             againHttp,
+            cacheMaxAge,
             // max_again = 2,
             // max_again_time = 2000,
             inatance_interceptors_request = interceptors_request ,
@@ -97,7 +98,11 @@ class HttpServer {
             timeout:timeout,
             headers:headers,
         })
-        
+        /**
+         * @description cacheMaxAge 强缓存 重用时间
+         */
+        this._cacheMaxAge = cacheMaxAge
+
         this._max_while = 0,
         /**
          * @description axios request请求拦截器
@@ -109,6 +114,16 @@ class HttpServer {
          * @description axios reponse 拦截器
          */
         this.inatance.interceptors.response.use( (response)=> {
+            // //  // 判断是否需要缓存 以及 需要缓存得时间 如接口中没有给出 取_cacheMaxAge全量缓存时间
+            // if (response.config.isCache && ( response.config._cacheMaxAge || this._cacheMaxAge )){
+            //     const _cacheMaxAge = response.config._cacheMaxAge || this._cacheMaxAge
+            //     response.headers = {
+            //         ...response.headers,
+            //         'cache-control': `max-age=${_cacheMaxAge}`
+            //     }
+            //     console.log(response,'response')
+            // }
+
             return inatance_interceptors_reponse(response)
         }, function (error) {
             return inatance_interceptors_reponse_error(error);
@@ -118,6 +133,18 @@ class HttpServer {
      * @description 请求axios
      */
     server(args){
+          // 判断是否需要缓存 以及 需要缓存得时间 如接口中没有给出 取_cacheMaxAge全量缓存时间
+            if (args.isCache && (args._cacheMaxAge || this._cacheMaxAge )){
+                const _cacheMaxAge = args._cacheMaxAge || this._cacheMaxAge
+                args.headers = {
+                    ...args.headers,
+                    'cache-control': `max-age=${_cacheMaxAge}, public`,
+                }
+                console.log(args,'response')
+            }
+
+
+
         return  this.inatance({...args})
     }
     /**
