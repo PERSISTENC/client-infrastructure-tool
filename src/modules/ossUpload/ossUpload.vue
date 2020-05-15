@@ -15,6 +15,9 @@
 
 <script >
 import { getOssUploadFile } from './ossUploadMethod'
+const OSS_API = 'https://isp-prod.oss-cn-hangzhou.aliyuncs.com/'
+const ACCESSID = 'LTAIzxiihKegrWfl'
+const ACCESSKEY = 'cyYJQHYozXRn0uvkiZdUrHVX7Lj7ON'
 export default {
     data (){
         return {
@@ -37,18 +40,15 @@ export default {
         },
         ossUrl:{
             type:String,
-            default:'',
-            required:true
+            default:OSS_API,
         },
         ossAccessId:{
             type:String,
-            default:'',
-            required:true
+            default:ACCESSID,
         },
         ossAccessKey:{
             type:String,
-            default:'',
-            required:true 
+            default:ACCESSKEY,
         }
     },
     methods:{
