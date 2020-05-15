@@ -2,12 +2,21 @@
 
 ## Server 服务端
 ```
+    HttpServe axios 服务端交互集合 1.0 版本 
+        ToDo 全局loading功能增加
 ```
 
 ## Components 组件库
 ```
+    TableGroup 表格组合（包含了 分页 排序 搜索 表格 头部操作项 ... ） 待完善
 ```
 
 ### Utils 公共方法
 ```
+    validate 公共校验方法
+```
+### Modules 公共方法
+
+    OssUpload Oss 上传图片组件
+        
 ```
