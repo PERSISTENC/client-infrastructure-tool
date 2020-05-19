@@ -8,6 +8,7 @@
         :max-size="maxSize"
         :before-upload="handleBeforeUpload"
         :data="ossData"
+        :on-format-error='handleFormatError'
         :action="ossUrl">
         <slot></slot>
     </Upload>
@@ -68,6 +69,9 @@ export default {
                 this.$refs.upload.post(file);
             })
             return false
+        },
+        handleFormatError(validateMessages){
+            this.$emit('on-format-error',validateMessages)
         }
     }
   
