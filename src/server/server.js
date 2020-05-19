@@ -113,10 +113,15 @@ class HttpServer {
     /**
      * @description 请求axios
      */
-    server(args){
+   async server(args){
         // 判断是否有缓存 并且 需要缓存 如果有缓存 那么直接返回 缓存数据
         if (args.isCache && args.cacheKey ){
-           const reponse =  getLocalStorage(args)
+           const cacheResponse =  getLocalStorage(args)
+           if (!cacheResponse){
+                return  this.inatance({...args})
+           }else{
+               return cacheResponse
+           }
         }
         return  this.inatance({...args})
     }
@@ -133,8 +138,7 @@ class HttpServer {
             while (this._taskQueue.length){
                 const firstTask = this._taskQueue.shift()
                 firstTask._inatance()
-                this.destroy(args._id)            
-
+                this.destroy(args._id)
             }
         })
     }
