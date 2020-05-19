@@ -8,6 +8,7 @@
         :max-size="maxSize"
         :before-upload="handleBeforeUpload"
         :data="ossData"
+        :on-format-error='handleFormatError'
         :action="ossUrl">
         <slot></slot>
     </Upload>
@@ -15,9 +16,6 @@
 
 <script >
 import { getOssUploadFile } from './ossUploadMethod'
-const OSS_API = 'https://isp-prod.oss-cn-hangzhou.aliyuncs.com/'
-const ACCESSID = 'LTAIzxiihKegrWfl'
-const ACCESSKEY = 'cyYJQHYozXRn0uvkiZdUrHVX7Lj7ON'
 export default {
     data (){
         return {
@@ -40,15 +38,19 @@ export default {
         },
         ossUrl:{
             type:String,
-            default:OSS_API,
+            default:'',
+            required:true
         },
         ossAccessId:{
             type:String,
-            default:ACCESSID,
+            default:'',
+            required:true
         },
         ossAccessKey:{
             type:String,
-            default:ACCESSKEY,
+            default:'',
+            required:true
+
         }
     },
     methods:{
@@ -67,6 +69,9 @@ export default {
                 this.$refs.upload.post(file);
             })
             return false
+        },
+        handleFormatError(validateMessages){
+            this.$emit('on-format-error',validateMessages)
         }
     }
   
