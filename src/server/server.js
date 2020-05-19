@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid';
+import { setLocalStorage ,getLocalStorage } from './cache'
 // TODO 公共得处理response
 /**
  * @description http任务队列
@@ -43,25 +44,17 @@ const interceptors_reponse_error = (error) => {
 class HttpServer {
     constructor({ 
             baseUrl = '', 
-            max = 10, 
             timeout = 1000,
             headers,
             loadingShow,
             loadingHide,
-            serverWarning,
-            isAgainHttp = false, 
-            againHttp,
             cacheMaxAge,
-            // max_again = 2,
-            // max_again_time = 2000,
+            cacheKey,
             inatance_interceptors_request = interceptors_request ,
             inatance_interceptors_reponse = interceptors_reponse,
             inatance_interceptors_reponse_error = interceptors_reponse_error
         } = {} ){
-        /**
-         * @description 请求最大数量 默认为10 超过此数量会再当前任务队列执行完成后 执行
-         */
-        this._max = max
+
         /**
          * @description http请求任务队列
          */
@@ -79,18 +72,6 @@ class HttpServer {
          */
         this._loadingHide = loadingHide
         /**
-         * @description 请求失败 钩子函数
-         */
-        this._serverWarning = serverWarning
-        /**
-         * @description 是否需要重载
-         */
-        this.isAgainHttp = isAgainHttp
-        /**
-         * @description 重新 请求函数 
-         */
-        this._againHttp = againHttp
-        /**
          * @description 初始化axios 实例 供每个请求调用
          */
         this.inatance = axios.create({
@@ -99,11 +80,14 @@ class HttpServer {
             headers:headers,
         })
         /**
-         * @description cacheMaxAge 强缓存 重用时间
+         * @description cacheMaxAge 缓存 过期时间 单秒 秒
          */
         this._cacheMaxAge = cacheMaxAge
-
-        this._max_while = 0,
+        /**
+         * @description cache 保存key
+         */
+        this._cacheKey = cacheKey
+   
         /**
          * @description axios request请求拦截器
          */
@@ -114,15 +98,12 @@ class HttpServer {
          * @description axios reponse 拦截器
          */
         this.inatance.interceptors.response.use( (response)=> {
-            // //  // 判断是否需要缓存 以及 需要缓存得时间 如接口中没有给出 取_cacheMaxAge全量缓存时间
-            // if (response.config.isCache && ( response.config._cacheMaxAge || this._cacheMaxAge )){
-            //     const _cacheMaxAge = response.config._cacheMaxAge || this._cacheMaxAge
-            //     response.headers = {
-            //         ...response.headers,
-            //         'cache-control': `max-age=${_cacheMaxAge}`
-            //     }
-            //     console.log(response,'response')
-            // }
+             // 判断是否需要缓存 以及 需要缓存得时间 如接口中没有给出 取_cacheMaxAge全量缓存时间 还有缓存的key值
+            if (response.config.isCache && response.config.cacheKey ){
+                // 缓存过期时间
+                const _cacheMaxAge = response.config._cacheMaxAge || this._cacheMaxAge
+                setLocalStorage(response,_cacheMaxAge)
+            }
 
             return inatance_interceptors_reponse(response)
         }, function (error) {
@@ -133,18 +114,10 @@ class HttpServer {
      * @description 请求axios
      */
     server(args){
-          // 判断是否需要缓存 以及 需要缓存得时间 如接口中没有给出 取_cacheMaxAge全量缓存时间
-            if (args.isCache && (args._cacheMaxAge || this._cacheMaxAge )){
-                const _cacheMaxAge = args._cacheMaxAge || this._cacheMaxAge
-                args.headers = {
-                    ...args.headers,
-                    'cache-control': `max-age=${_cacheMaxAge}, public`,
-                }
-                console.log(args,'response')
-            }
-
-
-
+        // 判断是否有缓存 并且 需要缓存 如果有缓存 那么直接返回 缓存数据
+        if (args.isCache && args.cacheKey ){
+           const reponse =  getLocalStorage(args)
+        }
         return  this.inatance({...args})
     }
     /**
