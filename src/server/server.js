@@ -116,7 +116,9 @@ class HttpServer {
    async server(args){
         // 判断是否有缓存 并且 需要缓存 如果有缓存 那么直接返回 缓存数据
         if (args.isCache && args.cacheKey ){
+            
            const cacheResponse =  getLocalStorage(args)
+           
            if (!cacheResponse){
                 return  this.inatance({...args})
            }else{

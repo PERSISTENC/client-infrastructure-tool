@@ -10,8 +10,8 @@
  */
  export const setLocalStorage = (response,_cacheMaxAge) => {
      const cache = {
-         curTime:new Date().getTime(),
-         timeout:_cacheMaxAge,
+         cacheTime:new Date().getTime(), // 缓存时间
+         timeout:_cacheMaxAge, // 过期时间
          cache:response
      }
      window.localStorage.setItem(response.config.cacheKey,JSON.stringify(cache))
@@ -23,12 +23,13 @@
  export const getLocalStorage = ({ cacheKey }) => {
     let cacheData = window.localStorage.getItem(cacheKey)
     const curTime = new Date().getTime()
-
     // 判断 cache 是否过期
     if (cacheData){
-       let cacheData = JSON.parse(cacheData)
+        cacheData = JSON.parse(cacheData)
+        const cacheAllTime = cacheData.cacheTime + cacheData.timeout 
         // 过期了
-       if (cacheData.curTime + cacheData.timeout >= curTime) {
+       if (cacheAllTime - curTime <= 0) {
+           remoreLocalStorage(cacheKey)
           return null
        }else{
            return cacheData.cache
@@ -36,3 +37,6 @@
     }
     return null
  }
+export const remoreLocalStorage = (key)=>{
+    window.localStorage.removeItem(key)
+}
