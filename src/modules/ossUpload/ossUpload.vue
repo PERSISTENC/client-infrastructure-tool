@@ -9,6 +9,7 @@
         :before-upload="handleBeforeUpload"
         :data="ossData"
         :on-format-error='handleFormatError'
+        :on-exceeded-size='handleExceededSize'
         :action="ossUrl">
         <slot></slot>
     </Upload>
@@ -72,6 +73,9 @@ export default {
         },
         handleFormatError(validateMessages){
             this.$emit('on-format-error',validateMessages)
+        },
+        handleExceededSize( file, fileList){
+            this.$emit('on-exceeded-size', file, fileList)
         }
     }
   
