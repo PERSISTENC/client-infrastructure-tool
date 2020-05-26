@@ -2,12 +2,10 @@
     <div class="add" >
         <div v-show='showDelete' @click="handleClick('delete')">
           <slot name="delete">
-              <i class="iconfont"  style="color:#FF8A53;margin-left:8px;">&#xe6ff;</i>
           </slot>
         </div>
         <div v-show='showAdd' @click="handleClick('add')">
           <slot name="add">
-              <i class="iconfont" style="color:#FF8A53;margin-left:8px;">&#xe700;</i>
           </slot>
         </div>
     </div>
