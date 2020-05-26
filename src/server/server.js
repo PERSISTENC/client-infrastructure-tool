@@ -132,7 +132,7 @@ class HttpServer {
             if (response.config.isCache && response.config.cacheKey ){
                 // 缓存过期时间
                 const _cacheMaxAge = response.config._cacheMaxAge || this._cacheMaxAge
-                setLocalStorage(response,_cacheMaxAge)
+                setLocalStorage(response.config._cacheKey,_cacheMaxAge,response)
             }
 
             return inatance_interceptors_reponse(response)
@@ -146,7 +146,7 @@ class HttpServer {
    async server(args){
         // 判断是否有缓存 并且 需要缓存 如果有缓存 那么直接返回 缓存数据
         if (args.isCache && args.cacheKey ){
-           const cacheResponse =  getLocalStorage(args)
+           const cacheResponse =  getLocalStorage(args.cacheKey)
            if (!cacheResponse){
                 return  this.inatance({...args})
            }else{
