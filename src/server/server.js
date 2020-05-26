@@ -15,7 +15,7 @@ const proxyHandler = {
  * @description http任务队列
  */
 class TaskHttpRequest  {
-    constructor ( { task,endTime,isAgain = false,args } = {} ){
+    constructor ( { task,endTime = '',isAgain = false,args } = {} ){
         this._startTime = new Date().getTime()
         this._endTime = endTime,
         this._inatance = task
@@ -119,9 +119,9 @@ class HttpServer {
                         this._loadingShow && this._loadingShow()
                         this._loadingBeginTime = new Date().getTime()
                     }
+                    
                 }, this._loadingShowTime);
             }
-
             return inatance_interceptors_request(config)
         })
         /**
@@ -160,16 +160,13 @@ class HttpServer {
      * @param {object} args 请求信息 后期考虑ts 接口重写
      */
     request(args){  
-        args._id = uuidv4()    
-        // console.log(args._id,args.url);  
+        args._id = uuidv4()  
+        // 将 http请求堆入 http任务队列
+        this._taskQueue.push(new TaskHttpRequest({args:args})) 
+
         return new Promise((resolve, reject)=>{
            const task = this.createHttpTask(args,resolve, reject)
-            // 如果当前执行任务总数 大于 当前最大并发http请求 那么推入队列 以待下次执行
-            this._taskQueue.push(new TaskHttpRequest({task:task,endTime:new Date().getTime(),args:args})) 
-            while (this._taskQueue.length){
-                const firstTask = this._taskQueue.shift()
-                firstTask._inatance()
-            }
+           task()    
         })
     }
     /**
@@ -180,10 +177,6 @@ class HttpServer {
       let index = this._taskQueue.findIndex(task=>task._args._id === id)
       if (index !== -1 ){
         this._taskQueue.splice(index,1)
-        debugger
-      }else{
-        //  console.log(id,this._taskQueue)
-
       }
     }
     /**
@@ -197,8 +190,7 @@ class HttpServer {
                 // 更新 当前执行请求数量
                 this._count--
                 // 删除 http 任务队列中的实例
-                // this.destroy(args._id)
-                console.log(this._taskQueue,'_taskQueue',args._id,args.url)
+                this.destroy(args._id)
                 if (this._taskQueue.length === 0){
                     if (new Date().getTime() - this._loadingBeginTime <= 1000){
                         setTimeout(() => {
