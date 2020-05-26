@@ -8,19 +8,19 @@
  * @param {String} _cacheMaxAge 过期时间 如果接口中存在 取接口 不存在取全局
  * 
  */
- export const setLocalStorage = (response,_cacheMaxAge) => {
+ export const setLocalStorage = (cacheKey,_cacheMaxAge,cacheData) => {
      const cache = {
          cacheTime:new Date().getTime(), // 缓存时间
          timeout:_cacheMaxAge, // 过期时间
-         cache:response
+         cache:cacheData
      }
-     window.localStorage.setItem(response.config.cacheKey,JSON.stringify(cache))
+     window.localStorage.setItem(cacheKey,JSON.stringify(cache))
  }
 /**
  * @description 从localstorage 取 缓存 判断边界值 不符合条件返回null 符合条件 返回 cache response 信息
  * @param {request} 请求参数
  */
- export const getLocalStorage = ({ cacheKey }) => {
+ export const getLocalStorage = (cacheKey) => {
     let cacheData = window.localStorage.getItem(cacheKey)
     const curTime = new Date().getTime()
     // 判断 cache 是否过期

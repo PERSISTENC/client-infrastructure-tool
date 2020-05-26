@@ -2,11 +2,20 @@ import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid';
 import { setLocalStorage ,getLocalStorage } from './cache'
 // TODO 公共得处理response
+const proxyHandler = {
+        get: (target, key) => {
+          return  target[key]
+        },
+        set: (target, key, value) => {
+          target[key] = value
+          return true
+        }
+}
 /**
  * @description http任务队列
  */
 class TaskHttpRequest  {
-    constructor ( { task,endTime,isAgain = false,args } = {} ){
+    constructor ( { task,endTime = '',isAgain = false,args } = {} ){
         this._startTime = new Date().getTime()
         this._endTime = endTime,
         this._inatance = task
@@ -35,11 +44,9 @@ const interceptors_reponse_error = (error) => {
 /**
  * @description 封装axios 请求方案  
  * @param {string} baseUrl http 请求公共url
- * @param {number} max 最大并发数 默认 10
  * @param {number} timeout 接口响应超时 默认 1000 单位秒
  * @param {object} headers 公共请求头
- * @param {number} max_again 重新请求最大数 默认 3
- * @param {number} max_again_time 重新请求最大数间隔 默认2000 单位秒
+ * @param {function} loadingShow loading 钩子函数
  */
 class HttpServer {
     constructor({ 
@@ -50,6 +57,8 @@ class HttpServer {
             loadingHide,
             cacheMaxAge,
             cacheKey,
+            isLoading = false,
+            loadingShowTime = 2000,
             inatance_interceptors_request = interceptors_request ,
             inatance_interceptors_reponse = interceptors_reponse,
             inatance_interceptors_reponse_error = interceptors_reponse_error
@@ -58,11 +67,16 @@ class HttpServer {
         /**
          * @description http请求任务队列
          */
+        // new Proxy([], proxyHandler)
         this._taskQueue = []
         /**
          * @description 当前正在执行得http 请求数量
          */
         this._count =  0
+        /**
+         * @description 是否需要loading
+         */
+        this._isLoading = isLoading
         /**
          * @description loading展示 钩子函数
          */
@@ -87,11 +101,27 @@ class HttpServer {
          * @description cache 保存key
          */
         this._cacheKey = cacheKey
-   
+        /**
+         * @description loading 开始时间
+         */
+        this._loadingBeginTime = 0
+        /**
+         * @description loading从多少秒开始出现
+         */
+        this._loadingShowTime = loadingShowTime 
         /**
          * @description axios request请求拦截器
          */
         this.inatance.interceptors.request.use((config)=>{
+            if(this._isLoading && this._loadingBeginTime === 0){
+                setTimeout(() => {
+                    if (this._taskQueue.length !== 0) {
+                        this._loadingShow && this._loadingShow()
+                        this._loadingBeginTime = new Date().getTime()
+                    }
+                    
+                }, this._loadingShowTime);
+            }
             return inatance_interceptors_request(config)
         })
         /**
@@ -102,7 +132,7 @@ class HttpServer {
             if (response.config.isCache && response.config.cacheKey ){
                 // 缓存过期时间
                 const _cacheMaxAge = response.config._cacheMaxAge || this._cacheMaxAge
-                setLocalStorage(response,_cacheMaxAge)
+                setLocalStorage(response.config._cacheKey,_cacheMaxAge,response)
             }
 
             return inatance_interceptors_reponse(response)
@@ -116,9 +146,7 @@ class HttpServer {
    async server(args){
         // 判断是否有缓存 并且 需要缓存 如果有缓存 那么直接返回 缓存数据
         if (args.isCache && args.cacheKey ){
-            
-           const cacheResponse =  getLocalStorage(args)
-           
+           const cacheResponse =  getLocalStorage(args.cacheKey)
            if (!cacheResponse){
                 return  this.inatance({...args})
            }else{
@@ -131,17 +159,14 @@ class HttpServer {
      * @description http server request 请求方案
      * @param {object} args 请求信息 后期考虑ts 接口重写
      */
-    request(args){
+    request(args){  
+        args._id = uuidv4()  
+        // 将 http请求堆入 http任务队列
+        this._taskQueue.push(new TaskHttpRequest({args:args})) 
+
         return new Promise((resolve, reject)=>{
-            args._id = uuidv4()        
            const task = this.createHttpTask(args,resolve, reject)
-            // 如果当前执行任务总数 大于 当前最大并发http请求 那么推入队列 以待下次执行
-            this._taskQueue.push(new TaskHttpRequest({task:task,endTime:new Date().getTime(),args:args}))       
-            while (this._taskQueue.length){
-                const firstTask = this._taskQueue.shift()
-                firstTask._inatance()
-                this.destroy(args._id)
-            }
+           task()    
         })
     }
     /**
@@ -164,6 +189,19 @@ class HttpServer {
             this.server(args).then(resolve).catch(reject).finally(()=>{
                 // 更新 当前执行请求数量
                 this._count--
+                // 删除 http 任务队列中的实例
+                this.destroy(args._id)
+                if (this._taskQueue.length === 0){
+                    if (new Date().getTime() - this._loadingBeginTime <= 1000){
+                        setTimeout(() => {
+                            this._loadingHide &&  this._loadingHide()
+                            this._loadingBeginTime = 0
+                        }, 1000);
+                    }else{
+                        this._loadingHide &&  this._loadingHide()
+                        this._loadingBeginTime = 0
+                    }
+                }                
             })
         }
     }
