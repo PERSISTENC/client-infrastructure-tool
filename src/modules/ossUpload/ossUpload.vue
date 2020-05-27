@@ -47,11 +47,10 @@ export default {
             default:'',
             required:true
         },
-        ossAccessKey:{
+        ossSignature:{
             type:String,
             default:'',
             required:true
-
         }
     },
     methods:{
@@ -65,7 +64,7 @@ export default {
             this.$emit('success',data)
         },
         handleBeforeUpload(file){
-            this.ossData = getOssUploadFile(file,'',{ossAccessKey:this.ossAccessKey,ossAccessId:this.ossAccessId});
+            this.ossData = getOssUploadFile(file,'',{ossSignature:this.ossSignature,ossAccessId:this.ossAccessId});
             this.$nextTick(()=>{
                 this.$refs.upload.post(file);
             })

@@ -39,14 +39,12 @@ export function getOssUploadFile(file, fileDirName,ossData) {
         ]
       }
     const policyBase64 = Base64.encode(JSON.stringify(policyText))
-    const bytes = Crypto.HMAC(Crypto.SHA1, policyBase64, ossData.ossAccessKey, {asBytes: true})
-    const signature = Crypto.util.bytesToBase64(bytes)
     return {
       key: fileUrl,
       policy: policyBase64,
       success_action_status: '200',
       OSSAccessKeyId: ossData.ossAccessId,
-      signature: signature
+      signature: ossData.ossSignature
     }
   }
   
