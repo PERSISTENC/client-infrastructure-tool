@@ -51,6 +51,11 @@ export default {
             type:String,
             default:'',
             required:true
+        },
+        ossPolicyBase64:{
+            type:String,
+            default:'',
+            required:true
         }
     },
     methods:{
@@ -64,7 +69,7 @@ export default {
             this.$emit('success',data)
         },
         handleBeforeUpload(file){
-            this.ossData = getOssUploadFile(file,'',{ossSignature:this.ossSignature,ossAccessId:this.ossAccessId});
+            this.ossData = getOssUploadFile(file,'',{ossSignature:this.ossSignature,ossAccessId:this.ossAccessId,policyBase64:this.ossPolicyBase64});
             this.$nextTick(()=>{
                 this.$refs.upload.post(file);
             })

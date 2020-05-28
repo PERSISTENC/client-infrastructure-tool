@@ -1,9 +1,8 @@
 import RenderDom from './render-dom'
 
-import Validate from './validate'
+import * as Validate from './validate'
 
 export  {
     RenderDom,
     Validate
-
 }
