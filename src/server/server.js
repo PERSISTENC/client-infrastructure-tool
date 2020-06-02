@@ -132,7 +132,7 @@ class HttpServer {
             if (response.config.isCache && response.config.cacheKey ){
                 // 缓存过期时间
                 const _cacheMaxAge = response.config._cacheMaxAge || this._cacheMaxAge
-                setLocalStorage(response.config._cacheKey,_cacheMaxAge,response)
+                setLocalStorage(response.config.cacheKey,_cacheMaxAge,response)
             }
 
             return inatance_interceptors_reponse(response)
