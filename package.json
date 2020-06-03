@@ -2,18 +2,20 @@
   "name": "client-construction-tool",
   "version": "0.1.1-12",
   "private": false,
-  "main": "src/index.js",
+  "main": "dist/index.umd.js",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "prerelease": "npm version prerelease",
-    "publish": "npm publish"
+    "publish": "npm publish",
+    "build:dev": "vue-cli-service build --target lib --name index src/index.js"
   },
   "dependencies": {
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
     "js-base64": "^2.5.2",
+    "less-loader": "^6.1.0",
     "vue": "^2.6.11"
   },
   "devDependencies": {
@@ -37,7 +39,9 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {
+      "no-useless-escape":"off"
+    }
   },
   "browserslist": [
     "> 1%",

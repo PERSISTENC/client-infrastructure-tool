@@ -1,5 +1,4 @@
 /* 邮箱验证 */
-//  /^[a-z0-9](?:[-_.+]?[a-z0-9]+)*@wz\.com$/i
 export function isWscnEmail (str) {
   const reg = /^([a-zA-Z0-9._-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/
   return reg.test(str)
