@@ -7835,17 +7835,7 @@ var remoreLocalStorage = function remoreLocalStorage(key) {
 
 
 
- // TODO 公共得处理response
 
-var proxyHandler = {
-  get: function get(target, key) {
-    return target[key];
-  },
-  set: function set(target, key, value) {
-    target[key] = value;
-    return true;
-  }
-};
 /**
  * @description http任务队列
  */

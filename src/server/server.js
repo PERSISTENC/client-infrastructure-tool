@@ -1,16 +1,6 @@
 import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid';
 import { setLocalStorage ,getLocalStorage } from './cache'
-// TODO 公共得处理response
-const proxyHandler = {
-        get: (target, key) => {
-          return  target[key]
-        },
-        set: (target, key, value) => {
-          target[key] = value
-          return true
-        }
-}
 /**
  * @description http任务队列
  */
