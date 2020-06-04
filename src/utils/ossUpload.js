@@ -1,8 +1,10 @@
+import { Base64 } from 'js-base64'
 // TODO 使用npm 管理
-import './crypto/hmac.js';
-import './crypto/sha1.js';
+import Crypto from '../modules/ossUpload/crypto/crypto.js';
+import '../modules/ossUpload/crypto/hmac.js';
+import '../modules/ossUpload/crypto/sha1.js';
 
-export function random_string(len) {
+ function random_string(len) {
     len = len || 32;
     var chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';
     var maxPos = chars.length;
@@ -13,7 +15,7 @@ export function random_string(len) {
     return pwd;
 }
 //生成文件上传的参数
-export function getOssUploadFile(file, fileDirName,ossData) {
+export default  function getOssUploadFile(file, fileDirName = 'map/home/',ossData) {
     function get_suffix(filename) {
       var pos = filename.lastIndexOf('.');
       var suffix = '';
@@ -22,19 +24,27 @@ export function getOssUploadFile(file, fileDirName,ossData) {
       }
       return suffix;
     }
-    if (!fileDirName) {
-      fileDirName = 'map/home/';
-    }
+
     const date = new Date()
     const month = (date.getMonth() + 1).toString().length === 1 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
     const day = date.getDate().toString().length === 1 ? '0' + date.getDate() : date.getDate()
     const fileUrl = fileDirName + date.getFullYear() + month + day + '/' + random_string(10) + date.getTime() + get_suffix(file.name)
+    const dateOver = new Date(date.getTime() + 5 * 60 * 1000)
+    const policyText = {
+        "expiration": dateOver.toISOString(), //设置该Policy的失效时间，超过这个失效时间之后，就没有办法通过这个policy上传文件了
+        "conditions": [
+          ["content-length-range", 0, 1048576000] // 设置上传文件的大小限制
+        ]
+      }
+    const policyBase64 = Base64.encode(JSON.stringify(policyText))
+    const bytes = Crypto.HMAC(Crypto.SHA1, policyBase64, ossData.ossAccessKey, {asBytes: true})
+    const signature = Crypto.util.bytesToBase64(bytes)
     return {
       key: fileUrl,
-      policy:ossData.ossPolicyBase64 ,
+      policy: policyBase64,
       success_action_status: '200',
       OSSAccessKeyId: ossData.ossAccessId,
-      signature: ossData.ossSignature
+      signature: signature
     }
   }
   

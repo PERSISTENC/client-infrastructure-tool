@@ -42,20 +42,17 @@ export default {
             default:'',
             required:true
         },
-        ossAccessId:{
-            type:String,
-            default:'',
-            required:true
-        },
-        ossSignature:{
-            type:String,
-            default:'',
-            required:true
-        },
-        ossPolicyBase64:{
-            type:String,
-            default:'',
-            required:true
+        /**
+         * @description oss 配置项
+         *      ossPolicyBase64
+         *      ossAccessId
+         *      ossSignature
+         */
+        ossConfig:{
+            type:Function,
+            default:async ()=>{
+                return {}
+            }
         }
     },
     methods:{
@@ -68,8 +65,9 @@ export default {
             }
             this.$emit('success',data)
         },
-        handleBeforeUpload(file){
-            this.ossData = getOssUploadFile(file,'',{ossSignature:this.ossSignature,ossAccessId:this.ossAccessId,policyBase64:this.ossPolicyBase64});
+        async handleBeforeUpload(file){
+            const ossConfig = await this.ossConfig()
+            this.ossData = getOssUploadFile(file,'',ossConfig);
             this.$nextTick(()=>{
                 this.$refs.upload.post(file);
             })

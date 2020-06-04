@@ -72,7 +72,9 @@ export function checkMobile(mobile){
 export function replaceMobile(mobile){
   return mobile.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
 }
-
+/**
+ * @description 目标对象全局替换空 
+ */
 export function trim(s){
     return s.replace(/(^\s*)|(\s*$)/g, "");
 }
@@ -97,3 +99,12 @@ export function format (fmt, date)
   fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));   
   return fmt;   
 }
+
+/**
+ * @description 必须包含字母和数字
+ * @param {string} target 目标对象
+ */
+
+ export function checkStringAndNumber(target){
+  return  new RegExp(/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/).test(target);
+ }
