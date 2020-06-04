@@ -1,6 +1,6 @@
 {
   "name": "client-construction-tool",
-  "version": "0.1.1-12",
+  "version": "0.1.1-13",
   "private": false,
   "main": "dist/index.umd.js",
   "scripts": {
