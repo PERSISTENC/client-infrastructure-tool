@@ -1,39 +1,52 @@
 /**
  * @description 过滤非法字符 如果需要外部指定过滤直  { valeu: 需要过滤的文本,replaces: 过滤违法值 string [] }
- * @param { object | string } data
+ * @param { string } data
+ * @param { boolean } isAll 是否全局替换
+ * @param { array | string } 替换数组
  * 
  */
-const characterReplace = (data) => {
-  if (data) {
-    let replaces = ['<br/>', '/n', '\n']
-    if (typeof data === 'string') {
-      replaces.forEach(str => {
-        data = data.replace(new RegExp(str, 'gm'), '')
+const replace = [
+  {
+    replace:'<br/>',
+    replaceString:''
+  },
+  {
+    replace:'/n',
+    replaceString:''
+  },
+  {
+    replace:'\n',
+    replaceString:''
+  },
+]
+const characterReplace = (target,isAll = true, replaces = replace) => {
+  if (target) {
+    if (Array.isArray(replaces)){
+      replaces.forEach(obj => {
+        if (isAll){
+          target = target.replace(new RegExp(obj.replace,  'gm'), obj.replaceString || '')
+        }else{
+          target = target.replace(new RegExp(obj.replace,  isAll ? 'gm' : ''), obj.replaceStringg || '')
+        }
       })
-      return data
     }else{
-      replaces = data.replaces || replaces
-      replaces.forEach(str => {
-        data.value = data.value.replace(new RegExp(str, 'gm'), '')
-      })
-      return data.value
+      console.warn('替换数组 invalid')
     }
   }
   return ''
 }
 const illegalityCharacter = {
-  bind(el, opts, vnode) {
-    el.innerHTML = characterReplace(opts.value)
+  bind(el, opts) {
+    el.innerHTML = characterReplace(opts.value.target || opts.value,opts.value.isAll,opts.value.replaces)
   },
-  inserted(el, opts, vnode) {
-    el.innerHTML = characterReplace(opts.value)
-
+  inserted(el, opts) {
+    el.innerHTML = characterReplace(opts.value.target || opts.value,opts.value.isAll,opts.value.replaces)
   },
-  update(el, opts, vnode) {
-    el.innerHTML = characterReplace(opts.value)
+  update(el, opts) {
+    el.innerHTML = characterReplace(opts.value.target || opts.value,opts.value.isAll,opts.value.replaces)
   },
-  componentUpdated(el, opts, vnode) {
-    el.innerHTML = characterReplace(opts.value)
+  componentUpdated(el, opts) {
+    el.innerHTML = characterReplace(opts.value.target || opts.value,opts.value.isAll,opts.value.replaces)
   }
 }
 
