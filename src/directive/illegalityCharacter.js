@@ -37,16 +37,16 @@ const characterReplace = (target,isAll = true, replaces = replace) => {
 }
 const illegalityCharacter = {
   bind(el, opts) {
-    el.innerHTML = characterReplace(opts.value.target || opts.value,opts.value.isAll,opts.value.replaces)
+    opts.value && (  el.innerHTML = characterReplace(opts.value.target || opts.value,opts.value.isAll,opts.value.replaces) )
   },
   inserted(el, opts) {
-    el.innerHTML = characterReplace(opts.value.target || opts.value,opts.value.isAll,opts.value.replaces)
+    opts.value && (  el.innerHTML = characterReplace(opts.value.target || opts.value,opts.value.isAll,opts.value.replaces) )
   },
   update(el, opts) {
-    el.innerHTML = characterReplace(opts.value.target || opts.value,opts.value.isAll,opts.value.replaces)
+    opts.value && (  el.innerHTML = characterReplace(opts.value.target || opts.value,opts.value.isAll,opts.value.replaces) )
   },
   componentUpdated(el, opts) {
-    el.innerHTML = characterReplace(opts.value.target || opts.value,opts.value.isAll,opts.value.replaces)
+    opts.value && (  el.innerHTML = characterReplace(opts.value.target || opts.value,opts.value.isAll,opts.value.replaces) )
   }
 }
 

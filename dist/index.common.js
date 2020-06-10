@@ -870,6 +870,28 @@ module.exports = defaults;
 
 /***/ }),
 
+/***/ "2532":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $ = __webpack_require__("23e7");
+var notARegExp = __webpack_require__("5a34");
+var requireObjectCoercible = __webpack_require__("1d80");
+var correctIsRegExpLogic = __webpack_require__("ab13");
+
+// `String.prototype.includes` method
+// https://tc39.github.io/ecma262/#sec-string.prototype.includes
+$({ target: 'String', proto: true, forced: !correctIsRegExpLogic('includes') }, {
+  includes: function includes(searchString /* , position = 0 */) {
+    return !!~String(requireObjectCoercible(this))
+      .indexOf(notARegExp(searchString), arguments.length > 1 ? arguments[1] : undefined);
+  }
+});
+
+
+/***/ }),
+
 /***/ "25f0":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2412,6 +2434,20 @@ module.exports = {
 
 /***/ }),
 
+/***/ "5a34":
+/***/ (function(module, exports, __webpack_require__) {
+
+var isRegExp = __webpack_require__("44e7");
+
+module.exports = function (it) {
+  if (isRegExp(it)) {
+    throw TypeError("The method doesn't accept regular expressions");
+  } return it;
+};
+
+
+/***/ }),
+
 /***/ "5c6c":
 /***/ (function(module, exports) {
 
@@ -2865,6 +2901,38 @@ module.exports = Object.create || function create(O, Properties) {
   } else result = NullProtoObject();
   return Properties === undefined ? result : defineProperties(result, Properties);
 };
+
+
+/***/ }),
+
+/***/ "7db0":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $ = __webpack_require__("23e7");
+var $find = __webpack_require__("b727").find;
+var addToUnscopables = __webpack_require__("44d2");
+var arrayMethodUsesToLength = __webpack_require__("ae40");
+
+var FIND = 'find';
+var SKIPS_HOLES = true;
+
+var USES_TO_LENGTH = arrayMethodUsesToLength(FIND);
+
+// Shouldn't skip holes
+if (FIND in []) Array(1)[FIND](function () { SKIPS_HOLES = false; });
+
+// `Array.prototype.find` method
+// https://tc39.github.io/ecma262/#sec-array.prototype.find
+$({ target: 'Array', proto: true, forced: SKIPS_HOLES || !USES_TO_LENGTH }, {
+  find: function find(callbackfn /* , that = undefined */) {
+    return $find(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
+  }
+});
+
+// https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
+addToUnscopables(FIND);
 
 
 /***/ }),
@@ -4703,6 +4771,28 @@ if (isForced(NUMBER, !NativeNumber(' 0o1') || !NativeNumber('0b1') || NativeNumb
 
 /***/ }),
 
+/***/ "ab13":
+/***/ (function(module, exports, __webpack_require__) {
+
+var wellKnownSymbol = __webpack_require__("b622");
+
+var MATCH = wellKnownSymbol('match');
+
+module.exports = function (METHOD_NAME) {
+  var regexp = /./;
+  try {
+    '/./'[METHOD_NAME](regexp);
+  } catch (e) {
+    try {
+      regexp[MATCH] = false;
+      return '/./'[METHOD_NAME](regexp);
+    } catch (f) { /* empty */ }
+  } return false;
+};
+
+
+/***/ }),
+
 /***/ "ac1f":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5992,6 +6082,32 @@ module.exports = function (object, names) {
   }
   return result;
 };
+
+
+/***/ }),
+
+/***/ "caad":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $ = __webpack_require__("23e7");
+var $includes = __webpack_require__("4d64").includes;
+var addToUnscopables = __webpack_require__("44d2");
+var arrayMethodUsesToLength = __webpack_require__("ae40");
+
+var USES_TO_LENGTH = arrayMethodUsesToLength('indexOf', { ACCESSORS: true, 1: 0 });
+
+// `Array.prototype.includes` method
+// https://tc39.github.io/ecma262/#sec-array.prototype.includes
+$({ target: 'Array', proto: true, forced: !USES_TO_LENGTH }, {
+  includes: function includes(el /* , fromIndex = 0 */) {
+    return $includes(this, el, arguments.length > 1 ? arguments[1] : undefined);
+  }
+});
+
+// https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
+addToUnscopables('includes');
 
 
 /***/ }),
@@ -7561,6 +7677,8 @@ __webpack_require__.d(cache_namespaceObject, "remoreLocalStorage", function() { 
 // NAMESPACE OBJECT: ./src/utils/baseMethods.js
 var baseMethods_namespaceObject = {};
 __webpack_require__.r(baseMethods_namespaceObject);
+__webpack_require__.d(baseMethods_namespaceObject, "debounce", function() { return debounce; });
+__webpack_require__.d(baseMethods_namespaceObject, "HasPermissionsAccess", function() { return HasPermissionsAccess; });
 __webpack_require__.d(baseMethods_namespaceObject, "getOssUploadFile", function() { return ossUpload_getOssUploadFile; });
 
 // NAMESPACE OBJECT: ./src/utils/validate.js
@@ -8782,6 +8900,15 @@ var es_array_map = __webpack_require__("d81d");
     return ctx.props.render(h);
   }
 });
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.find.js
+var es_array_find = __webpack_require__("7db0");
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.includes.js
+var es_array_includes = __webpack_require__("caad");
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es.string.includes.js
+var es_string_includes = __webpack_require__("2532");
+
 // EXTERNAL MODULE: ./node_modules/js-base64/base64.js
 var base64 = __webpack_require__("27ae");
 
@@ -8851,6 +8978,59 @@ function ossUpload_getOssUploadFile(file) {
 }
 // CONCATENATED MODULE: ./src/utils/baseMethods.js
 
+
+
+
+/**
+ * @desc 函数防抖
+ * @param func 函数
+ * @param wait 延迟执行毫秒数
+ * @param immediate true 表立即执行，false 表非立即执行
+ */
+
+function debounce(func, wait) {
+  var immediate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  var timeout;
+  return function () {
+    var context = this;
+    var args = arguments;
+    if (timeout) clearTimeout(timeout);
+
+    if (immediate) {
+      var callNow = !timeout;
+      timeout = setTimeout(function () {
+        timeout = null;
+      }, wait);
+      if (callNow) func.apply(context, args);
+    } else {
+      timeout = setTimeout(function () {
+        func.apply(context, args);
+      }, wait);
+    }
+  };
+}
+/**
+ * @description 判断是否有权限
+ * @param { array | number } value
+ * @param { array } permissions 权限列表  
+ */
+
+var HasPermissionsAccess = function HasPermissionsAccess() {
+  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var permissions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  var hasAccess = true; // 如果是多个权限 只要符合一次就出现 
+
+  if (Array.isArray(value)) {
+    hasAccess = value.find(function (id) {
+      return permissions.includes(id);
+    }) ? true : false;
+  } else {
+    // 单个权限
+    hasAccess = permissions.includes(value);
+  }
+
+  return hasAccess;
+};
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.regexp.constructor.js
 var es_regexp_constructor = __webpack_require__("4d63");
@@ -9132,16 +9312,16 @@ var characterReplace = function characterReplace(target) {
 
 var illegalityCharacter = {
   bind: function bind(el, opts) {
-    el.innerHTML = characterReplace(opts.value.target || opts.value, opts.value.isAll, opts.value.replaces);
+    opts.value && (el.innerHTML = characterReplace(opts.value.target || opts.value, opts.value.isAll, opts.value.replaces));
   },
   inserted: function inserted(el, opts) {
-    el.innerHTML = characterReplace(opts.value.target || opts.value, opts.value.isAll, opts.value.replaces);
+    opts.value && (el.innerHTML = characterReplace(opts.value.target || opts.value, opts.value.isAll, opts.value.replaces));
   },
   update: function update(el, opts) {
-    el.innerHTML = characterReplace(opts.value.target || opts.value, opts.value.isAll, opts.value.replaces);
+    opts.value && (el.innerHTML = characterReplace(opts.value.target || opts.value, opts.value.isAll, opts.value.replaces));
   },
   componentUpdated: function componentUpdated(el, opts) {
-    el.innerHTML = characterReplace(opts.value.target || opts.value, opts.value.isAll, opts.value.replaces);
+    opts.value && (el.innerHTML = characterReplace(opts.value.target || opts.value, opts.value.isAll, opts.value.replaces));
   }
 };
 /* harmony default export */ var directive_illegalityCharacter = (illegalityCharacter);
