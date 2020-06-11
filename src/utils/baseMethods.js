@@ -66,7 +66,10 @@ export const excelDownload = (excelData,excelName = '') =>{
         window.URL.revokeObjectURL(url); //释放掉blob对象
       }
     
- }
+}
+/**
+ * @description 
+ */
 export {
     getOssUploadFile
 }
