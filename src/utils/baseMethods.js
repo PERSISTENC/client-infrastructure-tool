@@ -41,6 +41,32 @@ export const HasPermissionsAccess = (value = [],permissions = [])=>{
     }
     return hasAccess
 }
+/**
+ * @description excel 文件下载 主要用于axios 下载excel 注意  一定要写响应类型：{responseType: 'blob'}
+ * @param excelData 二进制流
+ */
+export const excelDownload = (excelData,excelName = '') =>{
+      if (!excelName.includes('xls')){
+        console.warn('文件名字格式错误')
+        return
+      }
+      let blob = new Blob([excelData], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'})
+      if(window.navigator.msSaveOrOpenBlob){
+        navigator.msSaveBlob(blob, excelName);
+         
+      }else{
+        let url = window.URL.createObjectURL(blob);
+        let aLink = document.createElement("a");
+        aLink.style.display = "none";
+        aLink.href = url;
+        aLink.setAttribute("download", excelName);
+        document.body.appendChild(aLink);
+        aLink.click();
+        document.body.removeChild(aLink); //下载完成移除元素
+        window.URL.revokeObjectURL(url); //释放掉blob对象
+      }
+    
+ }
 export {
     getOssUploadFile
 }
