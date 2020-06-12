@@ -2,25 +2,32 @@
   "name": "client-construction-tool",
   "version": "0.1.1-14",
   "private": false,
-  "main": "dist/index.umd.js",
+  "description": "## Project setup ``` npm install ```",
+  "author": "wangsiyuan",
   "scripts": {
-    "serve": "vue-cli-service serve --target lib examples/App.vue",
+    "serve": "vue-cli-service serve --target lib examples/main.js",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "build:dev": "vue-cli-service build --target lib --name index src/index.js",
     "prerelease": "npm version prerelease",
-    "publish": "npm publish",
-    "build:dev": "vue-cli-service build --target lib --name index src/index.js"
+    "publish": "npm publish"
   },
+  "main": "dist/index.umd.js",
   "dependencies": {
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
+    "css-loader": "^3.5.3",
     "js-base64": "^2.5.2",
+    "less": "^3.11.3",
     "less-loader": "^6.1.0",
-    "vue": "^2.6.11"
+    "view-design": "^4.2.0",
+    "vue": "^2.6.11",
+    "vue-router": "^3.2.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.3.0",
     "@vue/cli-plugin-eslint": "~4.3.0",
+    "@vue/cli-plugin-router": "~4.4.0",
     "@vue/cli-service": "~4.3.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
@@ -40,7 +47,8 @@
       "parser": "babel-eslint"
     },
     "rules": {
-      "no-useless-escape": "off"
+      "no-useless-escape": "off",
+      "no-debugger": "off"
     }
   },
   "browserslist": [
@@ -48,13 +56,6 @@
     "last 2 versions",
     "not dead"
   ],
-  "description": "## Project setup ``` npm install ```",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/PERSISTENC/client-construction-tool.git"
-  },
-  "author": "wangsiyuan",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/PERSISTENC/client-construction-tool/issues"
   },
@@ -64,5 +65,10 @@
     "axios",
     "http",
     "serve"
-  ]
+  ],
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PERSISTENC/client-construction-tool.git"
+  }
 }
