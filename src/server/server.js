@@ -41,7 +41,7 @@ const interceptors_reponse_error = (error) => {
 class HttpServer {
     constructor({ 
             baseUrl = '', 
-            timeout = 1000,
+            timeout = 10000,
             headers,
             loadingShow,
             loadingHide,

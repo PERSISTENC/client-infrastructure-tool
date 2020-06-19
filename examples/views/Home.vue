@@ -31,7 +31,8 @@
                 </Sider>
                 <Layout :style="{padding: '0 24px 24px'}">
                     <Content :style="{padding: '24px', minHeight: '280px', background: '#fff',marginTop: '24px'}">
-                        Content
+                        <TableGroup>
+                        </TableGroup>
                     </Content>
                 </Layout>
             </Layout>
@@ -39,6 +40,7 @@
     </div>
 </template>
 <script>
+import { TableGroup } from '@/components/index'
     export default {
         name:'home',
         data(){
@@ -79,6 +81,9 @@
                     return []
                 }   
             }
+        },
+        components:{
+            TableGroup
         }
     }
 </script>
