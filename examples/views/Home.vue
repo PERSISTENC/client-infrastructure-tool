@@ -3,7 +3,7 @@
     <div class="layout">
         <Layout>
             <Header> 
-                <Menu mode="horizontal" theme="dark" :active-name="menuActive">
+                <Menu mode="horizontal" theme="dark" :active-name="menuActive" @on-select='handleMenuSelected'>
                     <div class="layout-logo"></div>
                     <div class="layout-nav">
                         <MenuItem :name="item.name" v-for="item in menuItem" :key="item.name">
@@ -30,9 +30,8 @@
                     </Menu>
                 </Sider>
                 <Layout :style="{padding: '0 24px 24px'}">
-                    <Content :style="{padding: '24px', minHeight: '280px', background: '#fff',marginTop: '24px'}">
-                        <TableGroup>
-                        </TableGroup>
+                    <Content :style="{padding: '24px', minHeight: '280px', background: '#fff',}">
+                     
                     </Content>
                 </Layout>
             </Layout>
@@ -40,52 +39,53 @@
     </div>
 </template>
 <script>
-import { TableGroup } from '@/components/index'
-    export default {
-        name:'home',
-        data(){
-            return {
-                menuActive:'Server',
-                menuItem:[
-                    {
-                        name:'Server',
-                        children:[
-                            {
-                                name:'Cache',
-                            },
-                            {
-                                name:'HttpServer'
-                            }
-                        ]
-                    },
-                    {
-                        name:'Components'
-                    },
-                    {
-                        name:'Utils'
-                    },
-                    {
-                        name:'Module',
-                    },
-                    {
-                        name:'directive'
-                    }
-                ]
-            }
-        },
-        computed:{
-            activeMenuData(){
-                try {
-                    return this.menuItem.find(obj=>obj.name === this.menuActive).children
-                }catch(err){
-                    return []
-                }   
-            }
-        },
-        components:{
-            TableGroup
+export default {
+    name:'home',
+    data(){
+        return {
+            menuActive:'Server',
+            menuItem:[
+                {
+                    name:'Server',
+                    children:[
+                        {
+                            name:'Cache',
+                        },
+                        {
+                            name:'HttpServer'
+                        }
+                    ]
+                },
+                {
+                    name:'Components'
+                },
+                {
+                    name:'Utils'
+                },
+                {
+                    name:'Module',
+                },
+                {
+                    name:'directive'
+                }
+            ]
+        }
+    },
+    computed:{
+        activeMenuData(){
+            try {
+                return this.menuItem.find(obj=>obj.name === this.menuActive).children
+            }catch(err){
+                return []
+            }   
+        }
+    },
+    methods: {
+        handleMenuSelected(name){
+            console.log(name,'name')
         }
     }
+}
 </script>
 <style scoped>
 .layout{
