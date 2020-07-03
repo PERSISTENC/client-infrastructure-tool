@@ -34,5 +34,7 @@
     5，表格Group 封装  
     6，Add 业务组件封装 √
     7，loading 重新载入
-    8，loading 指令    
+    8，loading 指令 
+    9，页面切换时 终止上一个页面的所有异步操作   visibilitychange （页面可见性改变事件） https://juejin.im/post/5ef6d1325188252e75366ab5
+    10，处理Vue中相同组件不同路径的页面重新渲染
 
