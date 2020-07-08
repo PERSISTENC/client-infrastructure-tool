@@ -5,6 +5,7 @@
   "description": "## Project setup ``` npm install ```",
   "author": "wangsiyuan",
   "scripts": {
+    "dev":"npm run serve",
     "serve": "vue-cli-service serve --target lib examples/main.js",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",

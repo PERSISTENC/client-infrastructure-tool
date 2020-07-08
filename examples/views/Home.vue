@@ -31,7 +31,7 @@
                 </Sider>
                 <Layout :style="{padding: '0 24px 24px'}">
                     <Content :style="{padding: '24px', minHeight: '280px', background: '#fff',}">
-                     
+                        <ModalForm v-model="model" title="测试" :formItem="formItem" :labelWidth='120'/>
                     </Content>
                 </Layout>
             </Layout>
@@ -39,10 +39,12 @@
     </div>
 </template>
 <script>
+import { ModalForm } from '@/template'
 export default {
     name:'home',
     data(){
         return {
+            model:true,
             menuActive:'Server',
             menuItem:[
                 {
@@ -57,16 +59,56 @@ export default {
                     ]
                 },
                 {
-                    name:'Components'
+                    name:'Components',
+                    children:[
+                        {
+                            name:'Add Option'
+                        },
+                        {
+                            name:'Table Group'
+                        }
+                    ]
                 },
                 {
                     name:'Utils'
                 },
                 {
                     name:'Module',
+                    children:[
+                        {
+                            name:'Oss Upload'
+                        }
+                    ]
                 },
                 {
-                    name:'directive'
+                    name:'Directive',
+                    children:[
+                        {
+                            name:'Illegality Character'
+                        }
+                    ]
+                },
+                {
+                    name:'Template',
+                    children:[
+                        {
+                            name:'FormModal'
+                        }
+                    ]
+                }
+            ],
+            formItem:[
+                {
+                    label:'用户名',
+                    prop:'user',
+                    required:true,
+                    formItemType:'input',
+                },
+                {
+                    label:'账号'
+                },
+                {
+                    label:'密码'
                 }
             ]
         }
@@ -80,9 +122,12 @@ export default {
             }   
         }
     },
+    components:{
+        ModalForm
+    },
     methods: {
         handleMenuSelected(name){
-            console.log(name,'name')
+            this.menuActive = name
         }
     }
 }
@@ -106,7 +151,7 @@ export default {
     left: 20px;
 }
 .layout-nav{
-    width: 620px;
+    width: 700px;
     margin: 0 auto;
     margin-right: 20px;
 }
