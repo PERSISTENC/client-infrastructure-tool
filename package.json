@@ -1,34 +1,26 @@
 {
-  "name": "client-construction-tool",
-  "version": "0.1.1-14",
-  "private": false,
-  "description": "## Project setup ``` npm install ```",
-  "author": "wangsiyuan",
+  "name": "client-infrastructure-tool",
+  "version": "0.1.1",
+  "private": true,
+  "main": "dist/index.umd.js",
   "scripts": {
-    "dev":"npm run serve",
-    "serve": "vue-cli-service serve --target lib examples/main.js",
+    "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "build:dev": "vue-cli-service build --target lib --name index src/index.js",
     "prerelease": "npm version prerelease",
-    "publish": "npm publish"
+    "publish": "npm publish",
+    "build:dev": "vue-cli-service build --target lib --name index src/index.js"
   },
-  "main": "dist/index.umd.js",
   "dependencies": {
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
-    "css-loader": "^3.5.3",
     "js-base64": "^2.5.2",
-    "less": "^3.11.3",
     "less-loader": "^6.1.0",
-    "view-design": "^4.2.0",
-    "vue": "^2.6.11",
-    "vue-router": "^3.2.0"
+    "vue": "^2.6.11"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.3.0",
     "@vue/cli-plugin-eslint": "~4.3.0",
-    "@vue/cli-plugin-router": "~4.4.0",
     "@vue/cli-service": "~4.3.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
@@ -48,8 +40,7 @@
       "parser": "babel-eslint"
     },
     "rules": {
-      "no-useless-escape": "off",
-      "no-debugger": "off"
+      "no-useless-escape": "off"
     }
   },
   "browserslist": [
@@ -57,19 +48,24 @@
     "last 2 versions",
     "not dead"
   ],
-  "bugs": {
-    "url": "https://github.com/PERSISTENC/client-construction-tool/issues"
+  "description": "## Project setup ``` npm install ```",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PERSISTENC/client-infrastructure-tool.git"
   },
-  "homepage": "https://github.com/PERSISTENC/client-construction-tool#readme",
+  "author": "wangsiyuan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PERSISTENC/client-infrastructure-tool/issues"
+  },
+  "homepage": "https://github.com/PERSISTENC/client-infrastructure-tool#readme",
   "keywords": [
     "vue",
     "axios",
     "http",
     "serve"
   ],
-  "license": "ISC",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/PERSISTENC/client-construction-tool.git"
+  "directories": {
+    "example": "examples"
   }
 }
