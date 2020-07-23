@@ -1,6 +1,6 @@
 {
-  "name": "client-construction-tool",
-  "version": "0.1.1-14",
+  "name": "client-infrastructure-tool",
+  "version": "0.1.1",
   "private": true,
   "main": "dist/index.umd.js",
   "scripts": {
@@ -51,18 +51,21 @@
   "description": "## Project setup ``` npm install ```",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PERSISTENC/client-construction-tool.git"
+    "url": "git+https://github.com/PERSISTENC/client-infrastructure-tool.git"
   },
   "author": "wangsiyuan",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/PERSISTENC/client-construction-tool/issues"
+    "url": "https://github.com/PERSISTENC/client-infrastructure-tool/issues"
   },
-  "homepage": "https://github.com/PERSISTENC/client-construction-tool#readme",
+  "homepage": "https://github.com/PERSISTENC/client-infrastructure-tool#readme",
   "keywords": [
     "vue",
     "axios",
     "http",
     "serve"
-  ]
+  ],
+  "directories": {
+    "example": "examples"
+  }
 }
