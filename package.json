@@ -1,7 +1,7 @@
 {
   "name": "client-construction-tool",
   "version": "0.1.1-14",
-  "private": false,
+  "private": true,
   "main": "dist/index.umd.js",
   "scripts": {
     "serve": "vue-cli-service serve",
