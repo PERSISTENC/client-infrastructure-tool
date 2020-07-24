@@ -3,7 +3,7 @@
         <div style="margin-bottom:12px;">
             <slot name="table-top"></slot>
         </div>
-        <Table :columns='columns' :data='data' @on-selection-change='handleSelectionChange'/>
+        <Table :columns='tableColumn' :data='data' @on-selection-change='handleSelectionChange' @on-sort-change='handleSortChange'/>
         <slot name="table-bottom"></slot>
         <slot name="page" >
             <div class="page" >
@@ -17,6 +17,7 @@
     </div>
 </template>
 <script>
+import dayjs from 'dayjs'
 export default {
     props:{
         data:{
@@ -48,6 +49,21 @@ export default {
             default:10
         }
     },
+    computed: {
+        tableColumn(){
+            let columns = this.columns
+            columns.map(column =>{
+                const { type,key,render } = column
+                // 时间展示
+                if (type === 'date' &&  key && !render) {
+                    column.render = (h,params)=>{
+                        return <span>{dayjs(params.row[key]).format('YYYY-MM-DD HH:mm:ss')}</span>
+                    }
+                }
+            })
+            return columns
+        }
+    },
     methods:{
         handlePageSizeChange(pageSize){
             this.$emit('on-page-size-change',pageSize)
@@ -57,6 +73,9 @@ export default {
         },
         handlePageChange(page) {
             this.$emit('on-change',page)
+        },
+        handleSortChange(){
+            this.$emit('on-sort-change',...arguments)
         }
     }
 }
