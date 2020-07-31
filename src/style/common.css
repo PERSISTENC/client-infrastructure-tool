@@ -1,0 +1,12 @@
+.clear-both{
+    clear: both;
+}
+.ellipsis{
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+html,body,#app{
+    width: 100%;
+    height: 100%;
+}

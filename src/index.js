@@ -13,5 +13,5 @@ export {
     Components,
     Utils,
     Module,
-    directive
+    directive,
 }
