@@ -2,7 +2,7 @@
   "name": "client-infrastructure-tool",
   "version": "0.1.2-1",
   "private": false,
-  "main": "dist/index.umd.js",
+  "main": "src/index.js",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
