@@ -1,5 +1,4 @@
 <script>
-import { Modal } from 'view-design'
 import Render from './renderFormItem'
 export default {
     data(){
@@ -39,9 +38,7 @@ export default {
             default:false
         }
     },
-    components:{
-        Modal
-    },
+   
     render(){
         return (
             <Modal {...{ props: this.modalProps,on:this.modelOn}} on-on-visible-change={this.onVisibleChange}>

@@ -1,5 +1,8 @@
 # client-infrastructure-tool
 
+## 
+    基建库不涉及到ui组件的引入 基建库所使用的ui组件 都为全局组件 ！！
+
 ## Server 服务端
 ```
     HttpServe axios 服务端交互集合 1.0 版本 ( 接口信息缓存, 全局loading， )
