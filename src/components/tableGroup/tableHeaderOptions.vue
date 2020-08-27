@@ -69,20 +69,3 @@ export default {
     }
 }
 </script>
-
-<style lang="less" scoped>
-.table-header-options{
-    display:flex;
-    align-items: center;
-}
-// .client-button{
-//   font-size:14px;
-//   font-family:MicrosoftYaHeiUI;
-//   color:rgba(255,135,32,1);
-//   cursor: pointer;
-//   margin-right: 24px; 
-//   .iconfont{
-//     margin-right: 8px;
-//   }
-// }
-</style>
