@@ -1,6 +1,6 @@
 {
   "name": "client-infrastructure-tool",
-  "version": "0.1.2-3",
+  "version": "0.1.2-4",
   "private": false,
   "main": "dist/index.umd.js",
   "scripts": {
