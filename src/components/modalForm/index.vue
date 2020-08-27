@@ -32,6 +32,11 @@ export default {
         resetFields:{
             type:Function,
             default:()=>{}
+        },
+        // 是否需要验证
+        isValidate:{
+            type:Boolean,
+            default:false
         }
     },
     components:{
@@ -40,7 +45,7 @@ export default {
     render(){
         return (
             <Modal {...{ props: this.modalProps,on:this.modelOn}} on-on-visible-change={this.onVisibleChange}>
-                <Form {...{ props: this.modalFormProps}}>
+                <Form {...{ props: this.modalFormProps}} ref="form">
                     { ( this.modalFormProps.formItem || [] ).map(this.renderFormItem)}
                 </Form>
                 <div slot="footer">
@@ -59,7 +64,7 @@ export default {
         },
         renderFormItem(formItem){
             return (
-                <FormItem {...{props:formItem}}>
+                <FormItem {...{props:formItem}} prop={formItem.prop || formItem.key}>
                     <Render renderData={formItem}/>
                 </FormItem>
             )
@@ -67,12 +72,23 @@ export default {
         handleCancel(){
             this.onVisibleChange(false)
             this.resetFields()
+            this.isValidate && this.$refs.form.resetFields()
         },
-        handleSubimt(){
+        async handleSubimt(){
             if (!this.subimt) return
+            if (this.isValidate) {
+                const valid = await this.$refs.form.validate(valid=>{
+                    return valid
+                })
+                if (!valid) {
+                    this.$Message.warning('请检查必填项')
+                    return 
+                }
+              
+            }
             this.loading = true
-            // 
             this.subimt().then(result =>{
+                // 验证成功
                 result && this.handleCancel()
             }).finally(()=>{
                 this.loading = false
