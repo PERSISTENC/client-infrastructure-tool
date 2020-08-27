@@ -1,5 +1,5 @@
 <template>
-    <div class="add" >
+    <div class="client-add-options" >
         <div v-show='showDelete' @click="handleClick('delete')">
           <slot name="delete">
           </slot>
@@ -50,12 +50,3 @@ export default {
 }
 
 </script>
-<style lang="less" scoped>
-.add{
-    width: 50px;
-    height: 100%;
-    min-height: 100%;
-    justify-content: space-between;
-    display:inline-flex;
-}
-</style>
