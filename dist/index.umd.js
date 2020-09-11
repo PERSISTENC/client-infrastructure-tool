@@ -9767,10 +9767,11 @@ __webpack_require__.d(modules_namespaceObject, "OssUpload", function() { return 
 // NAMESPACE OBJECT: ./src/utils/baseMethods.js
 var baseMethods_namespaceObject = {};
 __webpack_require__.r(baseMethods_namespaceObject);
+__webpack_require__.d(baseMethods_namespaceObject, "getOssUploadFile", function() { return ossUpload_getOssUploadFile; });
 __webpack_require__.d(baseMethods_namespaceObject, "debounce", function() { return debounce; });
 __webpack_require__.d(baseMethods_namespaceObject, "HasPermissionsAccess", function() { return HasPermissionsAccess; });
 __webpack_require__.d(baseMethods_namespaceObject, "excelDownload", function() { return excelDownload; });
-__webpack_require__.d(baseMethods_namespaceObject, "getOssUploadFile", function() { return ossUpload_getOssUploadFile; });
+__webpack_require__.d(baseMethods_namespaceObject, "ScrollTo", function() { return ScrollTo; });
 
 // NAMESPACE OBJECT: ./src/utils/validate.js
 var validate_namespaceObject = {};
@@ -10351,7 +10352,7 @@ var server_HttpServer = /*#__PURE__*/function () {
 }();
 
 /* harmony default export */ var server_server = (server_HttpServer);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"746dabbf-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/modules/ossUpload/ossUpload.vue?vue&type=template&id=4dbe6e1b&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"61d3e0e0-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/modules/ossUpload/ossUpload.vue?vue&type=template&id=4dbe6e1b&
 var ossUploadvue_type_template_id_4dbe6e1b_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('Upload',{ref:"upload",attrs:{"show-upload-list":false,"on-success":_vm.handleSuccess,"accept":_vm.accept,"format":_vm.format,"max-size":_vm.maxSize,"before-upload":_vm.handleBeforeUpload,"data":_vm.ossData,"on-format-error":_vm.handleFormatError,"on-exceeded-size":_vm.handleExceededSize,"action":_vm.ossUrl}},[_vm._t("default")],2)}
 var staticRenderFns = []
 
@@ -11112,6 +11113,7 @@ function debounce(func, wait) {
  * @param { array } permissions 权限列表  
  */
 
+
 var HasPermissionsAccess = function HasPermissionsAccess() {
   var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   var permissions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
@@ -11132,6 +11134,7 @@ var HasPermissionsAccess = function HasPermissionsAccess() {
  * @description excel 文件下载 主要用于axios 下载excel 注意  一定要写响应类型：{responseType: 'blob'}
  * @param excelData 二进制流
  */
+
 
 var excelDownload = function excelDownload(excelData) {
   var excelName = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
@@ -11161,8 +11164,31 @@ var excelDownload = function excelDownload(excelData) {
   }
 };
 /**
+ * @description 页面滚动到指定位置
+ * @param target 将要滚动的目标对象 如果是整个窗口  document.documentElement
+ * @param scrollEventId 要滚动的目标对象id
+ */
+
+
+var ScrollTo = function ScrollTo(target, scrollEventId) {
+  if (!target || !scrollEventId && scrollEventId !== 0) {
+    console.log('传入数据不合法', target, scrollEventId);
+    return;
+  }
+
+  var scrollEvent = document.getElementById(scrollEventId);
+
+  if (!scrollEvent) {
+    console.log('scrollEventId未获取到对象', scrollEvent);
+    return;
+  }
+
+  target.scrollTop = scrollEvent.offsetTop;
+};
+/**
  * @description 
  */
+
 
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.regexp.constructor.js
@@ -11395,7 +11421,7 @@ function reachBottom(event, binding) {
 
 
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"746dabbf-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/addOption/index.vue?vue&type=template&id=fa33e97c&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"61d3e0e0-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/addOption/index.vue?vue&type=template&id=fa33e97c&
 var addOptionvue_type_template_id_fa33e97c_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"client-add-options"},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.showDelete),expression:"showDelete"}],on:{"click":function($event){return _vm.handleClick('delete')}}},[_vm._t("delete")],2),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.showAdd),expression:"showAdd"}],on:{"click":function($event){return _vm.handleClick('add')}}},[_vm._t("add")],2)])}
 var addOptionvue_type_template_id_fa33e97c_staticRenderFns = []
 
@@ -11485,7 +11511,7 @@ var es_array_map = __webpack_require__("d81d");
 var dayjs_min = __webpack_require__("5a0c");
 var dayjs_min_default = /*#__PURE__*/__webpack_require__.n(dayjs_min);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"746dabbf-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/tableGroup/tableHeaderOptions.vue?vue&type=template&id=48e42f3c&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"61d3e0e0-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/tableGroup/tableHeaderOptions.vue?vue&type=template&id=48e42f3c&
 var tableHeaderOptionsvue_type_template_id_48e42f3c_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"table-header-options"},[_vm._l((_vm.contentTopRight),function(option){return [(option.type === 'button')?_c('Button',{key:option.name,attrs:{"size":option.size ? option.size : "default","ghost":option.ghost || false,"type":"primary","disabled":option.disabled},on:{"click":function($event){return _vm.handleOptionClick(option)}}},[_c('i',{staticClass:"iconfont",staticStyle:{"font-size":"12px"},domProps:{"innerHTML":_vm._s(option.icon)}}),_vm._v(" "+_vm._s(option.name)+" ")]):(option.type === 'upload')?_c('Upload',{key:option.name,attrs:{"show-upload-list":false,"action":option.action,"headers":_vm.header,"data":{bot:_vm.__bot},"on-success":option.onSuccess,"on-error":option.onError}},[_c('Button',{staticStyle:{"color":"#FF9305"},attrs:{"type":"text"}},[_c('i',{staticClass:"iconfont",staticStyle:{"margin-right":"4px"},domProps:{"innerHTML":_vm._s(option.icon)}}),_vm._v(" "+_vm._s(option.name)+" ")])],1):_c('div',{key:option.name,staticClass:"client-button",on:{"click":function($event){return _vm.handleOptionClick(option)}}},[_c('i',{staticClass:"iconfont",domProps:{"innerHTML":_vm._s(option.icon)}}),_vm._v(" "+_vm._s(option.name)+" ")])]})],2)}
 var tableHeaderOptionsvue_type_template_id_48e42f3c_staticRenderFns = []
 
@@ -11646,8 +11672,7 @@ var tableHeaderOptions_component = normalizeComponent(
     // 后端返回信息 包含了data 和 page 
     response: {
       type: Object,
-      default: function _default() {},
-      required: true
+      default: function _default() {}
     },
     // 是否展示总数 默认展示
     showTotal: {
@@ -11669,6 +11694,7 @@ var tableHeaderOptions_component = normalizeComponent(
     }
   },
   computed: {
+    /** 表格配置项 */
     tableColumn: function tableColumn() {
       var _this = this;
 
@@ -11698,10 +11724,12 @@ var tableHeaderOptions_component = normalizeComponent(
       });
       return columns;
     },
+
+    /** 传入page 组件里面的props */
     pageProps: function pageProps() {
-      var page = this.response.page ? this.response.page : {};
+      var page = this.response && this.response.page ? this.response.page : {};
       return {
-        total: page ? page.count : 0,
+        total: page ? page.count || page.total : 0,
         showElevator: this.showElevator,
         pageSize: this.pageSize || page.pageSize,
         showSizer: this.showSizer,
@@ -11720,7 +11748,7 @@ var tableHeaderOptions_component = normalizeComponent(
       "ref": "table",
       "attrs": {
         "columns": this.tableColumn,
-        "data": this.response.data
+        "data": this.data
       },
       "on": {
         "on-selection-change": this.handleSelectionChange,

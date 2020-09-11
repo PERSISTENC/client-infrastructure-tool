@@ -29,8 +29,8 @@ export default {
       default: 10
     },
     page: {
-       type: Number,
-      default: 1
+      type: Number,
+      default: 1 
     },
     formatDate: {
       type: String,
@@ -40,7 +40,6 @@ export default {
     response:{
       type: Object,
       default:()=> {},
-      required:true
     },
     // 是否展示总数 默认展示
     showTotal:{
@@ -60,6 +59,7 @@ export default {
     }
   },
   computed: {
+    /** 表格配置项 */
     tableColumn() {
       let columns = this.columns;
       columns.map(column => {
@@ -85,10 +85,11 @@ export default {
       });
       return columns;
     },
+    /** 传入page 组件里面的props */
     pageProps(){
-      const page = this.response.page ? this.response.page : {}
+      const page = this.response && this.response.page ? this.response.page : {}
       return {
-          total: page ? page.count : 0 ,
+          total: page ? page.count || page.total : 0 ,
           showElevator: this.showElevator,
           pageSize: this.pageSize ||  page.pageSize,
           showSizer: this.showSizer,
@@ -108,7 +109,7 @@ export default {
         <Table
           ref="table"
           columns={this.tableColumn}
-          data={this.response.data}
+          data={this.data}
           on-on-selection-change={this.handleSelectionChange}
           on-on-sort-change={this.handleSortChange}
         />

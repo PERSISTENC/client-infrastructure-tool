@@ -5,11 +5,10 @@
   "main": "dist/index.umd.js",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "prerelease": "npm version prerelease",
     "publish": "npm publish",
-    "build:dev": "vue-cli-service build --target lib --name index src/index.js"
+    "build": "vue-cli-service build --target lib --name index src/index.js"
   },
   "dependencies": {
     "axios": "^0.19.2",
