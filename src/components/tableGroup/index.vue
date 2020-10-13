@@ -1,69 +1,72 @@
 
 <script>
 import dayjs from "dayjs";
-import TableHeaderOptions from './tableHeaderOptions'
+import TableHeaderOptions from "./tableHeaderOptions";
 export default {
   name: "table-group",
   props: {
     data: {
       type: Array,
-      default:function (){
-        return this.response ? this.response.data : []
-      }
+      default: function () {
+        return this.response ? this.response.data : [];
+      },
     },
     columns: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
-   
+    total: {
+      type: Number,
+      default: 0,
+    },
     showElevator: {
       type: Boolean,
-      default: true
+      default: true,
     },
     showSizer: {
       type: Boolean,
-      default: false
+      default: false,
     },
     pageSize: {
       type: Number,
-      default: 10
+      default: 10,
     },
     page: {
       type: Number,
-      default: 1 
+      default: 1,
     },
     formatDate: {
       type: String,
-      default: "YYYY-MM-DD HH:mm:ss"
+      default: "YYYY-MM-DD HH:mm:ss",
     },
-    // 后端返回信息 包含了data 和 page 
-    response:{
+    // 后端返回信息 包含了data 和 page
+    response: {
       type: Object,
-      default:()=> {},
+      default: () => {},
     },
     // 是否展示总数 默认展示
-    showTotal:{
+    showTotal: {
       type: Boolean,
-      default:true,
+      default: true,
     },
     // 表格header total 默认显示文本 $1 为total 程序会将$1 替换为高亮代码
-    tableHeaderTotalText:{
-      type:String,
+    tableHeaderTotalText: {
+      type: String,
       default: function () {
-        return `共有符合条件的信息$1条`
-      }
+        return `共有符合条件的信息$1条`;
+      },
     },
-    tableHeaderOptions:{
-      type:Array,
-      default:()=>[]
-    }
+    tableHeaderOptions: {
+      type: Array,
+      default: () => [],
+    },
   },
   computed: {
     /** 表格配置项 */
     tableColumn() {
       let columns = this.columns;
-      columns.map(column => {
-        const { type, key, render,gatherKey } = column;
+      columns.map((column) => {
+        const { type, key, render, gatherKey } = column;
         // 时间展示 如果没有render 并且key 存在
         if (type === "date" && key && !render) {
           column.render = (h, params) => {
@@ -72,39 +75,41 @@ export default {
             );
           };
         }
-        if (type === 'gather' && key && gatherKey){
-            column.render = (h, params) => {
-              console.log(params.row,key)
-              console.log(params.row[key])
-              
-              return (
-                <span>{params.row[key].map(data=>data[gatherKey]).join(', ')}</span>
-              );
-            };
+        if (type === "gather" && key && gatherKey) {
+          column.render = (h, params) => {
+            console.log(params.row, key);
+            console.log(params.row[key]);
+
+            return (
+              <span>
+                {params.row[key].map((data) => data[gatherKey]).join(", ")}
+              </span>
+            );
+          };
         }
       });
       return columns;
     },
     /** 传入page 组件里面的props */
-    pageProps(){
-      const page = this.response && this.response.page ? this.response.page : {}
+    pageProps() {
+      const page =
+        this.response && this.response.page ? this.response.page : {};
+
       return {
-          total: page ? page.count || page.total : 0 ,
-          showElevator: this.showElevator,
-          pageSize: this.pageSize ||  page.pageSize,
-          showSizer: this.showSizer,
-          showTotal: this.showTotal,
-          page: this.page
-        };
+        total: this.total || (page ? page.count || page.total : 0),
+        showElevator: this.showElevator,
+        pageSize: this.pageSize || page.pageSize,
+        showSizer: this.showSizer,
+        showTotal: this.showTotal,
+        page: this.page,
+      };
     },
-    
   },
- 
   render() {
     return (
       <div class="client-tableGroup">
-        <div class="table-header" >
-            {this.$slots["table-header"] || this.renderTableHeader()}
+        <div class="table-header">
+          {this.$slots["table-header"] || this.renderTableHeader()}
         </div>
         <Table
           ref="table"
@@ -132,20 +137,28 @@ export default {
         </div>
       );
     },
-    renderTableHeader(){                 
-        return (
-            <div slot="table-header-content" class="table-header-content">
-                <span class="table-header-content-total" domPropsInnerHTML={this.tableHeaderTotalText.replace('$1',`<span class='client-highlight' style='margin:0 2px;'>${this.pageProps.total}</span>`)}></span>
-                <TableHeaderOptions contentTopRight={this.tableHeaderOptions} response={this.response}/>
-            </div>
-        )
+    renderTableHeader() {
+      return (
+        <div slot="table-header-content" class="table-header-content">
+          <span
+            class="table-header-content-total"
+            domPropsInnerHTML={this.tableHeaderTotalText.replace(
+              "$1",
+              `<span class='client-highlight' style='margin:0 2px;'>${this.pageProps.total}</span>`
+            )}
+          ></span>
+          <TableHeaderOptions
+            contentTopRight={this.tableHeaderOptions}
+            response={this.response}
+          />
+        </div>
+      );
     },
     // 筛选重置
-    resetColumnFilter(columnKeys){
-      columnKeys.forEach((key)=>{
-          this.$refs.table && this.$refs.table.handleFilterReset(key)
-      })
-      
+    resetColumnFilter(columnKeys) {
+      columnKeys.forEach((key) => {
+        this.$refs.table && this.$refs.table.handleFilterReset(key);
+      });
     },
     handlePageSizeChange(pageSize) {
       this.$emit("on-page-size-change", pageSize);
@@ -158,7 +171,7 @@ export default {
     },
     handleSortChange() {
       this.$emit("on-sort-change", ...arguments);
-    }
-  }
+    },
+  },
 };
 </script>

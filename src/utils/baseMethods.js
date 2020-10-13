@@ -84,14 +84,24 @@ const ScrollTo = (target, scrollEventId) => {
   }
   target.scrollTop = scrollEvent.offsetTop
 }
-
 /**
- * @description 
+ * 元素是否在可视区域内
+ * @param {event} el 
+ * @param {*} offset 
  */
+const IsElementInViewport = (el, offset = 0) => {
+  const box = el.getBoundingClientRect(),
+        top = (box.top >= 0),
+        left = (box.left >= 0),
+        bottom = (box.bottom <= (window.innerHeight || document.documentElement.clientHeight) + offset),
+        right = (box.right <= (window.innerWidth || document.documentElement.clientWidth) + offset);
+  return (top && left && bottom && right);
+}
 export {
   getOssUploadFile,
   debounce,
   HasPermissionsAccess,
   excelDownload,
-  ScrollTo
+  ScrollTo,
+  IsElementInViewport
 }

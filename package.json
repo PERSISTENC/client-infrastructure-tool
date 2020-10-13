@@ -7,7 +7,7 @@
     "serve": "vue-cli-service serve",
     "lint": "vue-cli-service lint",
     "prerelease": "npm version prerelease",
-    "publish": "npm publish",
+    "publish": "npm run build & npm version prerelease & npm publish",
     "build": "vue-cli-service build --target lib --name index src/index.js"
   },
   "dependencies": {
