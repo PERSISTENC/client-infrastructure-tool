@@ -1,7 +1,7 @@
 
 <script>
 import dayjs from "dayjs";
-import TableHeaderOptions from "./tableHeaderOptions";
+import TableHeaderOptions from "./options";
 export default {
   name: "table-group",
   props: {
@@ -37,7 +37,7 @@ export default {
     },
     formatDate: {
       type: String,
-      default: "YYYY-MM-DD HH:mm:ss",
+      default: "YYYY-MM-DD hh:mm:ss",
     },
     // 后端返回信息 包含了data 和 page
     response: {
@@ -71,7 +71,7 @@ export default {
         if (type === "date" && key && !render) {
           column.render = (h, params) => {
             return (
-              <span>{dayjs(params.row[key]).format(this.formatDate)}</span>
+              <span>{dayjs(params.row[key]).format(column.formatDate || this.formatDate)}</span>
             );
           };
         }
@@ -92,9 +92,7 @@ export default {
     },
     /** 传入page 组件里面的props */
     pageProps() {
-      const page =
-        this.response && this.response.page ? this.response.page : {};
-
+      const page = this.response && this.response.page ? this.response.page : {};
       return {
         total: this.total || (page ? page.count || page.total : 0),
         showElevator: this.showElevator,
@@ -108,7 +106,7 @@ export default {
   render() {
     return (
       <div class="client-tableGroup">
-        <div class="table-header">
+        <div class="table-header" >
           {this.$slots["table-header"] || this.renderTableHeader()}
         </div>
         <Table
@@ -140,15 +138,9 @@ export default {
     renderTableHeader() {
       return (
         <div slot="table-header-content" class="table-header-content">
-          <span
-            class="table-header-content-total"
-            domPropsInnerHTML={this.tableHeaderTotalText.replace(
-              "$1",
-              `<span class='client-highlight' style='margin:0 2px;'>${this.pageProps.total}</span>`
-            )}
-          ></span>
+          <span class="table-header-content-total"  domPropsInnerHTML={this.tableHeaderTotalText.replace( "$1", `<span class='client-highlight' style='margin:0 2px;'>${this.pageProps.total || 0}</span>` )}></span>
           <TableHeaderOptions
-            contentTopRight={this.tableHeaderOptions}
+            options={this.tableHeaderOptions}
             response={this.response}
           />
         </div>
