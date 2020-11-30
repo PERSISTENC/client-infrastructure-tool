@@ -9758,6 +9758,7 @@ __webpack_require__.d(modules_namespaceObject, "OssUpload", function() { return 
 // NAMESPACE OBJECT: ./src/utils/baseMethods.js
 var baseMethods_namespaceObject = {};
 __webpack_require__.r(baseMethods_namespaceObject);
+__webpack_require__.d(baseMethods_namespaceObject, "throttle", function() { return throttle; });
 __webpack_require__.d(baseMethods_namespaceObject, "getOssUploadFile", function() { return ossUpload_getOssUploadFile; });
 __webpack_require__.d(baseMethods_namespaceObject, "debounce", function() { return debounce; });
 __webpack_require__.d(baseMethods_namespaceObject, "HasPermissionsAccess", function() { return HasPermissionsAccess; });
@@ -9801,6 +9802,7 @@ __webpack_require__.d(components_namespaceObject, "AddOption", function() { retu
 __webpack_require__.d(components_namespaceObject, "TableGroup", function() { return tableGroup; });
 __webpack_require__.d(components_namespaceObject, "ModalForm", function() { return modalForm; });
 __webpack_require__.d(components_namespaceObject, "Options", function() { return tableGroup_options; });
+__webpack_require__.d(components_namespaceObject, "EventBus", function() { return /* Cannot get final name for export "default" in "./src/components/eventBus.js" (known exports: EventBus, known reexports: ) */ undefined; });
 
 // CONCATENATED MODULE: ./node_modules/@vue/cli-service/lib/commands/build/setPublicPath.js
 // This file is imported into lib/wc client bundles.
@@ -11101,6 +11103,24 @@ function debounce(func, wait) {
   };
 }
 /**
+ * @description 节流
+ */
+
+
+function throttle(func, delay) {
+  var prev = Date.now();
+  return function () {
+    var context = this;
+    var args = arguments;
+    var now = Date.now();
+
+    if (now - prev >= delay) {
+      func.apply(context, args);
+      prev = Date.now();
+    }
+  };
+}
+/**
  * @description 判断是否有权限
  * @param { array | number } value
  * @param { array } permissions 权限列表  
@@ -11400,12 +11420,11 @@ var illegalityCharacter = {
  * @param  event 需要监听的元素 
  */
 function reachBottom(event, binding) {
-  var _event$target = event.target,
-      scrollTop = _event$target.scrollTop,
-      clientHeight = _event$target.clientHeight,
-      scrollHeight = _event$target.scrollHeight;
+  var scrollTop = event.target.scrollTop;
+  var clientHeight = event.target.clientHeight;
+  var scrollHeight = event.target.scrollHeight;
+  var onReachBottom = typeof binding.value === 'function' ? binding.value : binding.value.onReachBottom;
   var bottom = binding.value.reachBottom || 0;
-  var onReachBottom = binding.value.onReachBottom;
 
   if (scrollTop + clientHeight + bottom >= scrollHeight) {
     onReachBottom();
@@ -11516,12 +11535,12 @@ var es_array_map = __webpack_require__("d81d");
 var dayjs_min = __webpack_require__("5a0c");
 var dayjs_min_default = /*#__PURE__*/__webpack_require__.n(dayjs_min);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"154f50ee-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/tableGroup/options.vue?vue&type=template&id=6abe6f10&
-var optionsvue_type_template_id_6abe6f10_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"table-header-options"},[_vm._l((_vm.options),function(option){return [(option.type === 'button')?_c('Button',{key:option.name,attrs:{"size":option.size ? option.size : "default","ghost":option.ghost || false,"type":option.type || "primary","disabled":option.disabled},on:{"click":function($event){return _vm.handleOptionClick(option)}}},[_c('i',{staticClass:"iconfont",staticStyle:{"font-size":"12px"},domProps:{"innerHTML":_vm._s(option.icon)}}),_vm._v(" "+_vm._s(option.name)+" ")]):(option.type === 'upload')?_c('Upload',{key:option.name,attrs:{"show-upload-list":false,"action":option.action,"headers":_vm.header,"on-success":option.onSuccess,"on-error":option.onError}},[(option.render)?_c('RenderDom',{attrs:{"render":option.render}}):_c('Button',{staticStyle:{"color":"#FF9305"},attrs:{"type":"text"}},[_c('i',{staticClass:"iconfont",staticStyle:{"margin-right":"4px"},domProps:{"innerHTML":_vm._s(option.icon)}}),_vm._v(" "+_vm._s(option.name)+" ")])],1):_c('div',{key:option.name,staticClass:"client-button",on:{"click":function($event){return _vm.handleOptionClick(option)}}},[_c('i',{staticClass:"iconfont",domProps:{"innerHTML":_vm._s(option.icon)}}),_vm._v(" "+_vm._s(option.name)+" ")])]})],2)}
-var optionsvue_type_template_id_6abe6f10_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"154f50ee-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/tableGroup/options.vue?vue&type=template&id=5a929b81&
+var optionsvue_type_template_id_5a929b81_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"table-header-options"},[_vm._l((_vm.options),function(option){return [(option.type === 'button')?_c('Button',{key:option.name,attrs:{"size":option.size ? option.size : "default","ghost":option.ghost || false,"type":option.type || "primary","disabled":option.disabled},on:{"click":function($event){return _vm.handleOptionClick(option)}}},[_c('i',{staticClass:"iconfont",staticStyle:{"font-size":"12px"},domProps:{"innerHTML":_vm._s(option.icon)}}),_vm._v(" "+_vm._s(option.name)+" ")]):(option.type === 'upload')?_c('Upload',{key:option.name,attrs:{"show-upload-list":false,"action":option.action,"headers":_vm.header,"on-success":option.onSuccess,"on-error":option.onError}},[(option.render)?_c('RenderDom',{attrs:{"render":option.render}}):_c('Button',{staticStyle:{"color":"#FF9305"},attrs:{"type":"text"}},[_c('i',{staticClass:"iconfont",staticStyle:{"margin-right":"4px"},domProps:{"innerHTML":_vm._s(option.icon)}}),_vm._v(" "+_vm._s(option.name)+" ")])],1):_c('div',{key:option.name,staticClass:"client-button",on:{"click":function($event){return _vm.handleOptionClick(option)}}},[_c('i',{staticClass:"iconfont",domProps:{"innerHTML":_vm._s(option.icon)}}),_vm._v(" "+_vm._s(option.name)+" ")])]})],2)}
+var optionsvue_type_template_id_5a929b81_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/tableGroup/options.vue?vue&type=template&id=6abe6f10&
+// CONCATENATED MODULE: ./src/components/tableGroup/options.vue?vue&type=template&id=5a929b81&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/tableGroup/options.vue?vue&type=script&lang=js&
 
@@ -11619,8 +11638,8 @@ var optionsvue_type_template_id_6abe6f10_staticRenderFns = []
 
 var options_component = normalizeComponent(
   tableGroup_optionsvue_type_script_lang_js_,
-  optionsvue_type_template_id_6abe6f10_render,
-  optionsvue_type_template_id_6abe6f10_staticRenderFns,
+  optionsvue_type_template_id_5a929b81_render,
+  optionsvue_type_template_id_5a929b81_staticRenderFns,
   false,
   null,
   null,
@@ -11704,6 +11723,14 @@ var options_component = normalizeComponent(
       default: function _default() {
         return [];
       }
+    },
+    isShowPage: {
+      type: Boolean,
+      default: true
+    },
+    isShowTableHeader: {
+      type: Boolean,
+      default: true
     }
   },
   computed: {
@@ -11757,7 +11784,7 @@ var options_component = normalizeComponent(
       "class": "client-tableGroup"
     }, [h("div", {
       "class": "table-header"
-    }, [this.$slots["table-header"] || this.renderTableHeader()]), h("Table", {
+    }, [this.$slots["table-header"] || this.isShowTableHeader && this.renderTableHeader()]), h("Table", {
       "ref": "table",
       "attrs": {
         "columns": this.tableColumn,
@@ -11767,7 +11794,7 @@ var options_component = normalizeComponent(
         "on-selection-change": this.handleSelectionChange,
         "on-sort-change": this.handleSortChange
       }
-    }), this.$slots["table-footer"], this.$slots["page"] || this.renderPage(), this.$slots["footer"]]);
+    }), this.$slots["table-footer"], this.$slots["page"] || this.isShowPage && this.renderPage(), this.$slots["footer"]]);
   },
   methods: {
     renderPage: function renderPage() {
@@ -11787,12 +11814,12 @@ var options_component = normalizeComponent(
       return h("div", {
         "slot": "table-header-content",
         "class": "table-header-content"
-      }, [h("span", {
+      }, [this.$slots['table-header-left'] || h("span", {
         "class": "table-header-content-total",
         "domProps": {
           "innerHTML": this.tableHeaderTotalText.replace("$1", "<span class='client-highlight' style='margin:0 2px;'>".concat(this.pageProps.total || 0, "</span>"))
         }
-      }), h(tableGroup_options, {
+      }), this.$slots['table-header-right'] || h(tableGroup_options, {
         "attrs": {
           "options": this.tableHeaderOptions,
           "response": this.response
@@ -12119,7 +12146,46 @@ var modalForm_component = normalizeComponent(
 )
 
 /* harmony default export */ var modalForm = (modalForm_component.exports);
+// CONCATENATED MODULE: ./src/components/eventBus.js
+
+
+
+var eventBus_EventBus = /*#__PURE__*/function () {
+  function _EventBus() {
+    _classCallCheck(this, _EventBus);
+
+    this.eventBus = {};
+  }
+
+  _createClass(_EventBus, [{
+    key: "$off",
+    value: function $off(id) {
+      delete this.eventBus[id];
+    }
+  }, {
+    key: "$on",
+    value: function $on(id, callback) {
+      this.eventBus[id] = callback;
+    }
+  }, {
+    key: "$emit",
+    value: function $emit(id) {
+      var _this$eventBus;
+
+      for (var _len = arguments.length, params = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        params[_key - 1] = arguments[_key];
+      }
+
+      if (this.eventBus[id]) (_this$eventBus = this.eventBus)[id].apply(_this$eventBus, params);
+    }
+  }]);
+
+  return _EventBus;
+}();
+
+var EventBus = new eventBus_EventBus();
 // CONCATENATED MODULE: ./src/components/index.js
+
 
 
 

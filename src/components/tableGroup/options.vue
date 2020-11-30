@@ -12,7 +12,7 @@
                         {{option.name}}
                     </Button>
                 </Upload>
-               
+                <!-- todo 支持render  -->
                 <div class="client-button" v-else :key="option.name"  @click="handleOptionClick(option)">
                     <i class="iconfont" v-html='option.icon'></i>
                     {{option.name}}

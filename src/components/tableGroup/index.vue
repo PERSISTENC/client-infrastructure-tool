@@ -60,6 +60,14 @@ export default {
       type: Array,
       default: () => [],
     },
+    isShowPage:{
+      type:Boolean,
+      default:true
+    },
+    isShowTableHeader:{
+      type:Boolean,
+      default:true
+    }
   },
   computed: {
     /** 表格配置项 */
@@ -106,8 +114,8 @@ export default {
   render() {
     return (
       <div class="client-tableGroup">
-        <div class="table-header" >
-          {this.$slots["table-header"] || this.renderTableHeader()}
+        <div class="table-header">
+          {this.$slots["table-header"] || ( this.isShowTableHeader && this.renderTableHeader() ) }
         </div>
         <Table
           ref="table"
@@ -117,7 +125,7 @@ export default {
           on-on-sort-change={this.handleSortChange}
         />
         {this.$slots["table-footer"]}
-        {this.$slots["page"] || this.renderPage()}
+        { this.$slots["page"] || ( this.isShowPage && this.renderPage() )}
         {this.$slots["footer"]}
       </div>
     );
@@ -138,11 +146,8 @@ export default {
     renderTableHeader() {
       return (
         <div slot="table-header-content" class="table-header-content">
-          <span class="table-header-content-total"  domPropsInnerHTML={this.tableHeaderTotalText.replace( "$1", `<span class='client-highlight' style='margin:0 2px;'>${this.pageProps.total || 0}</span>` )}></span>
-          <TableHeaderOptions
-            options={this.tableHeaderOptions}
-            response={this.response}
-          />
+          { this.$slots['table-header-left'] ||  <span class="table-header-content-total"  domPropsInnerHTML={this.tableHeaderTotalText.replace( "$1", `<span class='client-highlight' style='margin:0 2px;'>${this.pageProps.total || 0}</span>` )}></span> }
+          { this.$slots['table-header-right'] || <TableHeaderOptions options={this.tableHeaderOptions} response={this.response} /> }
         </div>
       );
     },

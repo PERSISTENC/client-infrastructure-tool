@@ -26,6 +26,21 @@ function debounce(func, wait, immediate = false) {
   }
 }
 /**
+ * @description 节流
+ */
+function throttle(func, delay) {
+  var prev = Date.now();
+  return function () {
+    var context = this;
+    var args = arguments;
+    var now = Date.now();
+    if (now - prev >= delay) {
+      func.apply(context, args);
+      prev = Date.now();
+    }
+  }
+}
+/**
  * @description 判断是否有权限
  * @param { array | number } value
  * @param { array } permissions 权限列表  
@@ -91,13 +106,15 @@ const ScrollTo = (target, scrollEventId) => {
  */
 const IsElementInViewport = (el, offset = 0) => {
   const box = el.getBoundingClientRect(),
-        top = (box.top >= 0),
-        left = (box.left >= 0),
-        bottom = (box.bottom <= (window.innerHeight || document.documentElement.clientHeight) + offset),
-        right = (box.right <= (window.innerWidth || document.documentElement.clientWidth) + offset);
+    top = (box.top >= 0),
+    left = (box.left >= 0),
+    bottom = (box.bottom <= (window.innerHeight || document.documentElement.clientHeight) + offset),
+    right = (box.right <= (window.innerWidth || document.documentElement.clientWidth) + offset);
   return (top && left && bottom && right);
 }
+
 export {
+  throttle,
   getOssUploadFile,
   debounce,
   HasPermissionsAccess,

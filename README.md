@@ -29,9 +29,21 @@
 ```
 ## 更新记录
 0.1.2-7 修复tableGroup page 组件 total 优先级问题
-0.1.2-9 css 增加rest.css
-        更改css为less
-        table组件中columns为date 支持从columns 取值
+0.1.2-9 css 
+            增加rest.css
+            更改css为less
+        components
+            table组件中columns为date 支持从columns 取值
+            table组件
+            table组件
+                     增加slot table-header-right
+                     增加slot table-header-left
+                     增加是否显示头部默认slot isShowTableHeader
+                     增加是否显示默认 page isShowPage
+        utils
+            增加throttle节流函数
+        directive
+            reachBottom 可直接传入函数
 
 ## 0.2 规划
     ```
@@ -45,15 +57,17 @@
 
 ## TODO
 
-1 tableHeaderOptions 拆分出来
-2 tableHeaderOptions 点击导出 增加params
-3 tableHeader slot 配置更加自由
-4 form表单配置话封装
+1 tableHeaderOptions 拆分出来   √
+2 tableHeaderOptions 点击导出 增加params  优先级不高 又需求再说
+3 tableHeader slot 配置更加自由   √
+4 form表单配置化封装
 5 table 表格拆分
 6 axios 支持局部loading
 7 axios 支持请求失败 重新请求
 8 axios all 并发支持
-9 react版本的event bus
+9 react版本的event bus  √
+10 检查 tableGroup 中的data 在response 有data 是否还能监听到
+11 tableHeaderOptions 支持render 
 
 
 
