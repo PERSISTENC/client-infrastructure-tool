@@ -45,7 +45,9 @@
     1. 增加throttle节流函数
 * directive
     1. reachBottom 可直接传入函数
-
+### 0.1.3
+    Option 组件修复 当type 为button时  无法成为button 的type  增加了buttonType
+    utils 增加获取url携带参数 公共函数
 ## 0.2 规划
     ```
     1，全局loading  √
@@ -69,6 +71,9 @@
 9. react版本的event bus  √
 10. 检查 tableGroup 中的data 在response 有data 是否还能监听到
 11. tableHeaderOptions 支持render 
+12. 1,复制粘贴指令 v-copy 2,输入框防抖指令 v-debounce 3, 图片懒加载 v-LazyLoad 4,拖拽指令 v-draggable 5,长按指令 v-longpress 参考:https://juejin.cn/post/6906028995133833230
+13. 序列化url参数
+
 
 
 

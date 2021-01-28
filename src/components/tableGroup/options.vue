@@ -1,7 +1,7 @@
 <template>
         <div class='table-header-options'>
             <template v-for="option in options" >
-                 <Button v-if="option.type === 'button'" :key="option.name" :size='option.size ? option.size : "default"' :ghost='option.ghost || false' :type='option.type || "primary"' :disabled="option.disabled" @click="handleOptionClick(option)">
+                 <Button v-if="option.type === 'button'" :key="option.name" :size='option.size ? option.size : "default"' :ghost='option.ghost || false' :type='option.buttonType || "primary"' :disabled="option.disabled" @click="handleOptionClick(option)">
                     <i class="iconfont" style="font-size:12px;" v-html='option.icon'></i>
                     {{option.name}}
                 </Button>

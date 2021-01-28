@@ -112,7 +112,30 @@ const IsElementInViewport = (el, offset = 0) => {
     right = (box.right <= (window.innerWidth || document.documentElement.clientWidth) + offset);
   return (top && left && bottom && right);
 }
+/**
+ * @description 得到浏览器地址携带的参数
+ */
+function getQueryStringArgs() {
+  //取得url中？之后的字符串并且去掉开头的?
+  const qs = window.location.search.length > 0 ? window.location.search.substring(1) : "";
+  let args = {};
+  let items = qs.length > 0 ? qs.split("&") : []
+  items.forEach(item => {
+    // 通过&分割字符保存在items数组中
+      const key = decodeURIComponent (item.split('=')[0])
+      const value = decodeURIComponent (item.split('=')[1])
+      args[key] = value
+  })
+}
 
+/**
+ * @description 判断是否是ios
+ */
+function isIos() {
+  const u = navigator.userAgent
+  const isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端 
+  return isiOS
+}
 export {
   throttle,
   getOssUploadFile,
@@ -120,5 +143,7 @@ export {
   HasPermissionsAccess,
   excelDownload,
   ScrollTo,
-  IsElementInViewport
+  getQueryStringArgs,
+  IsElementInViewport,
+  isIos
 }
