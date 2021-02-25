@@ -65,7 +65,7 @@ export function sortByKey(obj, flag) {
 
 //校验手机格式
 export function checkMobile(mobile){
-  return RegExp(/^1[34578]\d{9}$/).test(mobile);
+  return RegExp(/^1[3456789]\d{9}$/).test(mobile);
 }
 
 //手机号码中间4位替换为星号

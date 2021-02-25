@@ -47,7 +47,9 @@
     1. reachBottom 可直接传入函数
 ### 0.1.3
     Option 组件修复 当type 为button时  无法成为button 的type  增加了buttonType
+    Option Upload 组件增加文件大小限制prop及触发事件
     utils 增加获取url携带参数 公共函数
+
 ## 0.2 规划
     ```
     1，全局loading  √

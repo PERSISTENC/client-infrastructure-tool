@@ -5,7 +5,7 @@
                     <i class="iconfont" style="font-size:12px;" v-html='option.icon'></i>
                     {{option.name}}
                 </Button>
-                <Upload :show-upload-list="false" :key="option.name" v-else-if="option.type === 'upload'" :action="option.action" :headers="header" :on-success='option.onSuccess' :on-error='option.onError'>
+                <Upload  v-else-if="option.type === 'upload'" :show-upload-list="false" :key="option.name" :action="option.action" :headers="header" :on-success='option.onSuccess' :on-error='option.onError' :maxSize='option.maxSize' :on-exceeded-size='option.handleExceededSize || handleExceededSize'>
                     <RenderDom v-if="option.render" :render='option.render' />
                     <Button v-else type="text" style='color:#FF9305;' >
                         <i class="iconfont" style="margin-right:4px;" v-html='option.icon'></i>
@@ -13,7 +13,7 @@
                     </Button>
                 </Upload>
                 <!-- todo 支持render  -->
-                <div class="client-button" v-else :key="option.name"  @click="handleOptionClick(option)">
+                <div  v-else class="client-button" :key="option.name"  @click="handleOptionClick(option)">
                     <i class="iconfont" v-html='option.icon'></i>
                     {{option.name}}
                 </div>
@@ -73,6 +73,10 @@ export default {
            
             option.click && option.click(option)
         },
+        // upload 上传文件超出大小
+        handleExceededSize(){
+            this.$Message.warning('超出文件指定大小')
+        }
     }
 }
 </script>
