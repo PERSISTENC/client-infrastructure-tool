@@ -4,8 +4,9 @@
 
 /**
  * @description 从localstorage 设置 缓存
- * @param {Object} response axios 拦截器返回参数
- * @param {String} _cacheMaxAge 过期时间 如果接口中存在 取接口 不存在取全局
+ * @param {String} _cacheMaxAge 过期时间 
+ * @param {String} cacheKey 缓存key
+ * @param {String} cacheData 缓存数据
  * 
  */
  export const setLocalStorage = (cacheKey,_cacheMaxAge,cacheData) => {

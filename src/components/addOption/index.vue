@@ -14,10 +14,16 @@
 export default {
   name: 'add',
   props: {
+    /**
+     * @description 当前所在得index
+     */
     index: {
       type: Number,
       default: 0,
     },
+    /**
+     * @description 总数
+     */
     total: {
       type: Number,
       default: 0,

@@ -37,7 +37,7 @@ export default {
     },
     formatDate: {
       type: String,
-      default: "YYYY-MM-DD hh:mm:ss",
+      default: "YYYY-MM-DD HH:mm:ss",
     },
     // 后端返回信息 包含了data 和 page
     response: {

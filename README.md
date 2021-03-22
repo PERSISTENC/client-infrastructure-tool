@@ -45,11 +45,12 @@
     1. 增加throttle节流函数
 * directive
     1. reachBottom 可直接传入函数
-### 0.1.3
+### 0.1.2-11
     Option 组件修复 当type 为button时  无法成为button 的type  增加了buttonType
     Option Upload 组件增加文件大小限制prop及触发事件
     utils 增加获取url携带参数 公共函数
-
+###  0.1.2-12
+    tableGroup 修复formatDate  12小时制 应为24小时制
 ## 0.2 规划
     ```
     1，全局loading  √
