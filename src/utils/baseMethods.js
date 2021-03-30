@@ -80,7 +80,15 @@ const excelDownload = (excelData, excelName = '') => {
     document.body.removeChild(aLink); //下载完成移除元素
     window.URL.revokeObjectURL(url); //释放掉blob对象
   }
-
+}
+/**
+ * @description window.open 下载word 文件或者是pdf 
+ * @param {object} data get方法携带得参数
+ * @param {string} path window open打开得地址
+ */
+const excelDownloadWindow = (data, path) => {
+  const queryString = Object.keys(data).filter(key => data[key]).map(key => `${key}=${data[key]}`).join('&')
+  window.open(`${path}?${queryString}`)
 }
 /**
  * @description 页面滚动到指定位置
@@ -122,10 +130,53 @@ function getQueryStringArgs() {
   let items = qs.length > 0 ? qs.split("&") : []
   items.forEach(item => {
     // 通过&分割字符保存在items数组中
-      const key = decodeURIComponent (item.split('=')[0])
-      const value = decodeURIComponent (item.split('=')[1])
-      args[key] = value
+    const key = decodeURIComponent(item.split('=')[0])
+    const value = decodeURIComponent(item.split('=')[1])
+    args[key] = value
   })
+}
+/**
+ * @description 是否滚动到底部
+ * @param reachBottomValue 距离底部多少距离 触发函数
+ * @param reachBottom  执行函数
+ * @param isRemoveEventListener 是否要移除监听 如果要移除监听  执行函数为必填
+ * @param isDebounce 是否需要防抖 默认要用
+ * @param debounceTime 防抖时间
+ */
+function onReachBottom(node, reachBottomData = {}) {
+  const { isRemoveEventListener = false, reachBottomValue = 0, reachBottom, isDebounce = true, debounceTime = 200 } = reachBottomData
+  const onScroll = (event) => {
+    const scroll = () => {
+      const scrollTop = event.target.scrollTop
+      const clientHeight = event.target.clientHeight
+      const scrollHeight = event.target.scrollHeight
+      if (scrollTop + clientHeight + reachBottomValue >= scrollHeight) {
+        reachBottom()
+      }
+    }
+    if (isDebounce) {
+      debounce(scroll, debounceTime)()
+    } else {
+      scroll()
+    }
+
+
+  }
+
+  if (isRemoveEventListener) {
+    node.removeEventListener('scroll', onScroll)
+  } else {
+    node.addEventListener('scroll', onScroll)
+  }
+
+
+
+
+
+
+
+
+
 }
 
 /**
@@ -145,5 +196,7 @@ export {
   ScrollTo,
   getQueryStringArgs,
   IsElementInViewport,
-  isIos
+  isIos,
+  excelDownloadWindow,
+  onReachBottom,
 }

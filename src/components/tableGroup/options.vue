@@ -5,7 +5,20 @@
                     <i class="iconfont" style="font-size:12px;" v-html='option.icon'></i>
                     {{option.name}}
                 </Button>
-                <Upload  v-else-if="option.type === 'upload'" :show-upload-list="false" :key="option.name" :action="option.action" :headers="header" :on-success='option.onSuccess' :on-error='option.onError' :maxSize='option.maxSize' :on-exceeded-size='option.handleExceededSize || handleExceededSize'>
+                <Upload  
+                    v-else-if="option.type === 'upload'" 
+                    :accept='option.accept'  
+                    :format='option.format'  
+                    :show-upload-list="false" 
+                    :key="option.name" 
+                    :action="option.action" 
+                    :headers="header"
+                    :data='option.data'
+                    :on-success='option.onSuccess' 
+                    :on-error='option.onError' 
+                    :maxSize='option.maxSize' 
+                    :on-format-error='option.onFormatError'
+                    :on-exceeded-size='option.handleExceededSize || handleExceededSize'>
                     <RenderDom v-if="option.render" :render='option.render' />
                     <Button v-else type="text" style='color:#FF9305;' >
                         <i class="iconfont" style="margin-right:4px;" v-html='option.icon'></i>

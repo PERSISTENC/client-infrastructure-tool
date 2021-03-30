@@ -51,6 +51,11 @@
     utils 增加获取url携带参数 公共函数
 ###  0.1.2-12
     tableGroup 修复formatDate  12小时制 应为24小时制
+
+###  0.1.2-13
+    table option upload组件 增加accept format on-format-error	
+    utils basemethods 增加excel window.open 打开方式
+    utils basemethods 增加滚动到底部触发函数
 ## 0.2 规划
     ```
     1，全局loading  √
