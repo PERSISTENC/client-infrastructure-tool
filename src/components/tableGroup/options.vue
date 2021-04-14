@@ -13,6 +13,7 @@
                     :key="option.name" 
                     :action="option.action" 
                     :headers="header"
+                    :multiple='option.multiple'
                     :data='option.data'
                     :on-success='option.onSuccess' 
                     :on-error='option.onError' 

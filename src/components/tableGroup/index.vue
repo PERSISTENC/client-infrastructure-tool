@@ -7,9 +7,7 @@ export default {
   props: {
     data: {
       type: Array,
-      default: function () {
-        return this.response ? this.response.data : [];
-      },
+      default: ()=>[]
     },
     columns: {
       type: Array,
@@ -83,11 +81,9 @@ export default {
             );
           };
         }
+        // 数据拆分展示
         if (type === "gather" && key && gatherKey) {
           column.render = (h, params) => {
-            console.log(params.row, key);
-            console.log(params.row[key]);
-
             return (
               <span>
                 {params.row[key].map((data) => data[gatherKey]).join(", ")}
@@ -120,7 +116,7 @@ export default {
         <Table
           ref="table"
           columns={this.tableColumn}
-          data={this.data}
+          data={ ( this.response && this.response.data ) || this.data}
           on-on-selection-change={this.handleSelectionChange}
           on-on-sort-change={this.handleSortChange}
         />

@@ -56,6 +56,10 @@
     table option upload组件 增加accept format on-format-error	
     utils basemethods 增加excel window.open 打开方式
     utils basemethods 增加滚动到底部触发函数
+
+###  0.1.2-14
+    table option upload组件 增加多选参数	
+   
 ## 0.2 规划
     ```
     1，全局loading  √
@@ -77,11 +81,10 @@
 7. axios 支持请求失败 重新请求
 8. axios all 并发支持
 9. react版本的event bus  √
-10. 检查 tableGroup 中的data 在response 有data 是否还能监听到
+10. 检查 tableGroup 中的data 在response 有data 是否还能监听到 
 11. tableHeaderOptions 支持render 
 12. 1,复制粘贴指令 v-copy 2,输入框防抖指令 v-debounce 3, 图片懒加载 v-LazyLoad 4,拖拽指令 v-draggable 5,长按指令 v-longpress 参考:https://juejin.cn/post/6906028995133833230
-13. 序列化url参数
-
-
+13. 序列化url参数 √
+14. 组件批量传入prop  不当个传
 
 
