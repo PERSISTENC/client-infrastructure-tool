@@ -59,6 +59,8 @@
 
 ###  0.1.2-14
     table option upload组件 增加多选参数	
+###  0.1.2-15
+    table option 导出去除ids 直接导出自定义url 	
    
 ## 0.2 规划
     ```

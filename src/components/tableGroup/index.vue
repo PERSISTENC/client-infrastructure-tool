@@ -98,7 +98,7 @@ export default {
     pageProps() {
       const page = this.response && this.response.page ? this.response.page : {};
       return {
-        total: this.total || (page ? page.count || page.total : 0),
+        total: this.total || (page ? ( page.count || page.total ) : 0),
         showElevator: this.showElevator,
         pageSize: this.pageSize || page.pageSize,
         showSizer: this.showSizer,

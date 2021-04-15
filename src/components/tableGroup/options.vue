@@ -65,7 +65,7 @@ export default {
     methods:{
         // 点击操作按钮
         handleOptionClick(option){
-            const { type } = option
+            const { type,exportUrl } = option
             // 如果是导出 有已经选择的 那么取其中id 如果没有取response 的ids
             if (type === 'export'){
                 let selected = []
@@ -74,12 +74,11 @@ export default {
                 }catch(err) {
                     selected = []
                 }
-                const exportUrl = option.exportUrl
                 this.$Modal.confirm({
                     content:`<p style='margin-top:32px;'>确认取消确认需要导出【${selected.length}条】信息么？</p>`,
                     onOk:()=>{
-                        // TODO 导出增加params 传参
-                        window.open(`${process.env.BASE_API}${exportUrl}?ids=${selected.join(',')}`)
+                        // 如果导出有参数 请在exportUrl 做修改
+                        window.open(exportUrl)
                     }
                 })
                 return 

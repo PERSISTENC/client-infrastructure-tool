@@ -268,9 +268,10 @@ Axios.prototype.getUri = function getUri(config) {
 utils.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData(method) {
   /*eslint func-names:0*/
   Axios.prototype[method] = function(url, config) {
-    return this.request(utils.merge(config || {}, {
+    return this.request(mergeConfig(config || {}, {
       method: method,
-      url: url
+      url: url,
+      data: (config || {}).data
     }));
   };
 });
@@ -278,7 +279,7 @@ utils.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData
 utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
   /*eslint func-names:0*/
   Axios.prototype[method] = function(url, data, config) {
-    return this.request(utils.merge(config || {}, {
+    return this.request(mergeConfig(config || {}, {
       method: method,
       url: url,
       data: data
@@ -1032,6 +1033,7 @@ var defaults = {
   xsrfHeaderName: 'X-XSRF-TOKEN',
 
   maxContentLength: -1,
+  maxBodyLength: -1,
 
   validateStatus: function validateStatus(status) {
     return status >= 200 && status < 300;
@@ -2578,7 +2580,6 @@ var utils = __webpack_require__("c532");
 
 function encode(val) {
   return encodeURIComponent(val).
-    replace(/%40/gi, '@').
     replace(/%3A/gi, ':').
     replace(/%24/g, '$').
     replace(/%2C/gi, ',').
@@ -2724,7 +2725,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
   error.response = response;
   error.isAxiosError = true;
 
-  error.toJSON = function() {
+  error.toJSON = function toJSON() {
     return {
       // Standard
       message: this.message,
@@ -3101,7 +3102,7 @@ var createError = __webpack_require__("2d83");
  */
 module.exports = function settle(resolve, reject, response) {
   var validateStatus = response.config.validateStatus;
-  if (!validateStatus || validateStatus(response.status)) {
+  if (!response.status || !validateStatus || validateStatus(response.status)) {
     resolve(response);
   } else {
     reject(createError(
@@ -3172,59 +3173,73 @@ module.exports = function mergeConfig(config1, config2) {
   config2 = config2 || {};
   var config = {};
 
-  var valueFromConfig2Keys = ['url', 'method', 'params', 'data'];
-  var mergeDeepPropertiesKeys = ['headers', 'auth', 'proxy'];
+  var valueFromConfig2Keys = ['url', 'method', 'data'];
+  var mergeDeepPropertiesKeys = ['headers', 'auth', 'proxy', 'params'];
   var defaultToConfig2Keys = [
-    'baseURL', 'url', 'transformRequest', 'transformResponse', 'paramsSerializer',
-    'timeout', 'withCredentials', 'adapter', 'responseType', 'xsrfCookieName',
-    'xsrfHeaderName', 'onUploadProgress', 'onDownloadProgress',
-    'maxContentLength', 'validateStatus', 'maxRedirects', 'httpAgent',
-    'httpsAgent', 'cancelToken', 'socketPath'
+    'baseURL', 'transformRequest', 'transformResponse', 'paramsSerializer',
+    'timeout', 'timeoutMessage', 'withCredentials', 'adapter', 'responseType', 'xsrfCookieName',
+    'xsrfHeaderName', 'onUploadProgress', 'onDownloadProgress', 'decompress',
+    'maxContentLength', 'maxBodyLength', 'maxRedirects', 'transport', 'httpAgent',
+    'httpsAgent', 'cancelToken', 'socketPath', 'responseEncoding'
   ];
+  var directMergeKeys = ['validateStatus'];
+
+  function getMergedValue(target, source) {
+    if (utils.isPlainObject(target) && utils.isPlainObject(source)) {
+      return utils.merge(target, source);
+    } else if (utils.isPlainObject(source)) {
+      return utils.merge({}, source);
+    } else if (utils.isArray(source)) {
+      return source.slice();
+    }
+    return source;
+  }
+
+  function mergeDeepProperties(prop) {
+    if (!utils.isUndefined(config2[prop])) {
+      config[prop] = getMergedValue(config1[prop], config2[prop]);
+    } else if (!utils.isUndefined(config1[prop])) {
+      config[prop] = getMergedValue(undefined, config1[prop]);
+    }
+  }
 
   utils.forEach(valueFromConfig2Keys, function valueFromConfig2(prop) {
-    if (typeof config2[prop] !== 'undefined') {
-      config[prop] = config2[prop];
+    if (!utils.isUndefined(config2[prop])) {
+      config[prop] = getMergedValue(undefined, config2[prop]);
     }
   });
 
-  utils.forEach(mergeDeepPropertiesKeys, function mergeDeepProperties(prop) {
-    if (utils.isObject(config2[prop])) {
-      config[prop] = utils.deepMerge(config1[prop], config2[prop]);
-    } else if (typeof config2[prop] !== 'undefined') {
-      config[prop] = config2[prop];
-    } else if (utils.isObject(config1[prop])) {
-      config[prop] = utils.deepMerge(config1[prop]);
-    } else if (typeof config1[prop] !== 'undefined') {
-      config[prop] = config1[prop];
-    }
-  });
+  utils.forEach(mergeDeepPropertiesKeys, mergeDeepProperties);
 
   utils.forEach(defaultToConfig2Keys, function defaultToConfig2(prop) {
-    if (typeof config2[prop] !== 'undefined') {
-      config[prop] = config2[prop];
-    } else if (typeof config1[prop] !== 'undefined') {
-      config[prop] = config1[prop];
+    if (!utils.isUndefined(config2[prop])) {
+      config[prop] = getMergedValue(undefined, config2[prop]);
+    } else if (!utils.isUndefined(config1[prop])) {
+      config[prop] = getMergedValue(undefined, config1[prop]);
+    }
+  });
+
+  utils.forEach(directMergeKeys, function merge(prop) {
+    if (prop in config2) {
+      config[prop] = getMergedValue(config1[prop], config2[prop]);
+    } else if (prop in config1) {
+      config[prop] = getMergedValue(undefined, config1[prop]);
     }
   });
 
   var axiosKeys = valueFromConfig2Keys
     .concat(mergeDeepPropertiesKeys)
-    .concat(defaultToConfig2Keys);
+    .concat(defaultToConfig2Keys)
+    .concat(directMergeKeys);
 
   var otherKeys = Object
-    .keys(config2)
+    .keys(config1)
+    .concat(Object.keys(config2))
     .filter(function filterAxiosKeys(key) {
       return axiosKeys.indexOf(key) === -1;
     });
 
-  utils.forEach(otherKeys, function otherKeysDefaultToConfig2(prop) {
-    if (typeof config2[prop] !== 'undefined') {
-      config[prop] = config2[prop];
-    } else if (typeof config1[prop] !== 'undefined') {
-      config[prop] = config1[prop];
-    }
-  });
+  utils.forEach(otherKeys, mergeDeepProperties);
 
   return config;
 };
@@ -3807,6 +3822,25 @@ module.exports = function (bitmap, value) {
     writable: !(bitmap & 4),
     value: value
   };
+};
+
+
+/***/ }),
+
+/***/ "5f02":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Determines whether the payload is an error thrown by Axios
+ *
+ * @param {*} payload The value to test
+ * @returns {boolean} True if the payload is an error thrown by Axios, otherwise false
+ */
+module.exports = function isAxiosError(payload) {
+  return (typeof payload === 'object') && (payload.isAxiosError === true);
 };
 
 
@@ -7128,6 +7162,7 @@ if (DESCRIPTORS && !(NAME in FunctionPrototype)) {
 
 var utils = __webpack_require__("c532");
 var settle = __webpack_require__("467f");
+var cookies = __webpack_require__("7aac");
 var buildURL = __webpack_require__("30b5");
 var buildFullPath = __webpack_require__("83b9");
 var parseHeaders = __webpack_require__("c345");
@@ -7148,7 +7183,7 @@ module.exports = function xhrAdapter(config) {
     // HTTP basic authentication
     if (config.auth) {
       var username = config.auth.username || '';
-      var password = config.auth.password || '';
+      var password = config.auth.password ? unescape(encodeURIComponent(config.auth.password)) : '';
       requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
     }
 
@@ -7229,8 +7264,6 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__("7aac");
-
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(fullPath)) && config.xsrfCookieName ?
         cookies.read(config.xsrfCookieName) :
@@ -7296,7 +7329,7 @@ module.exports = function xhrAdapter(config) {
       });
     }
 
-    if (requestData === undefined) {
+    if (!requestData) {
       requestData = null;
     }
 
@@ -7878,6 +7911,21 @@ function isObject(val) {
 }
 
 /**
+ * Determine if a value is a plain Object
+ *
+ * @param {Object} val The value to test
+ * @return {boolean} True if value is a plain Object, otherwise false
+ */
+function isPlainObject(val) {
+  if (toString.call(val) !== '[object Object]') {
+    return false;
+  }
+
+  var prototype = Object.getPrototypeOf(val);
+  return prototype === null || prototype === Object.prototype;
+}
+
+/**
  * Determine if a value is a Date
  *
  * @param {Object} val The value to test
@@ -8033,34 +8081,12 @@ function forEach(obj, fn) {
 function merge(/* obj1, obj2, obj3, ... */) {
   var result = {};
   function assignValue(val, key) {
-    if (typeof result[key] === 'object' && typeof val === 'object') {
+    if (isPlainObject(result[key]) && isPlainObject(val)) {
       result[key] = merge(result[key], val);
-    } else {
-      result[key] = val;
-    }
-  }
-
-  for (var i = 0, l = arguments.length; i < l; i++) {
-    forEach(arguments[i], assignValue);
-  }
-  return result;
-}
-
-/**
- * Function equal to merge with the difference being that no reference
- * to original objects is kept.
- *
- * @see merge
- * @param {Object} obj1 Object to merge
- * @returns {Object} Result of all merge properties
- */
-function deepMerge(/* obj1, obj2, obj3, ... */) {
-  var result = {};
-  function assignValue(val, key) {
-    if (typeof result[key] === 'object' && typeof val === 'object') {
-      result[key] = deepMerge(result[key], val);
-    } else if (typeof val === 'object') {
-      result[key] = deepMerge({}, val);
+    } else if (isPlainObject(val)) {
+      result[key] = merge({}, val);
+    } else if (isArray(val)) {
+      result[key] = val.slice();
     } else {
       result[key] = val;
     }
@@ -8091,6 +8117,19 @@ function extend(a, b, thisArg) {
   return a;
 }
 
+/**
+ * Remove byte order marker. This catches EF BB BF (the UTF-8 BOM)
+ *
+ * @param {string} content with BOM
+ * @return {string} content value without BOM
+ */
+function stripBOM(content) {
+  if (content.charCodeAt(0) === 0xFEFF) {
+    content = content.slice(1);
+  }
+  return content;
+}
+
 module.exports = {
   isArray: isArray,
   isArrayBuffer: isArrayBuffer,
@@ -8100,6 +8139,7 @@ module.exports = {
   isString: isString,
   isNumber: isNumber,
   isObject: isObject,
+  isPlainObject: isPlainObject,
   isUndefined: isUndefined,
   isDate: isDate,
   isFile: isFile,
@@ -8110,9 +8150,9 @@ module.exports = {
   isStandardBrowserEnv: isStandardBrowserEnv,
   forEach: forEach,
   merge: merge,
-  deepMerge: deepMerge,
   extend: extend,
-  trim: trim
+  trim: trim,
+  stripBOM: stripBOM
 };
 
 
@@ -8414,6 +8454,9 @@ axios.all = function all(promises) {
   return Promise.all(promises);
 };
 axios.spread = __webpack_require__("0df6");
+
+// Expose isAxiosError
+axios.isAxiosError = __webpack_require__("5f02");
 
 module.exports = axios;
 
@@ -10601,7 +10644,7 @@ var server_HttpServer = /*#__PURE__*/function () {
 }();
 
 /* harmony default export */ var server_server = (server_HttpServer);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"80f591c0-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/modules/ossUpload/ossUpload.vue?vue&type=template&id=4dbe6e1b&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"ca2a9e2e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/modules/ossUpload/ossUpload.vue?vue&type=template&id=4dbe6e1b&
 var ossUploadvue_type_template_id_4dbe6e1b_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('Upload',{ref:"upload",attrs:{"show-upload-list":false,"on-success":_vm.handleSuccess,"accept":_vm.accept,"format":_vm.format,"max-size":_vm.maxSize,"before-upload":_vm.handleBeforeUpload,"data":_vm.ossData,"on-format-error":_vm.handleFormatError,"on-exceeded-size":_vm.handleExceededSize,"action":_vm.ossUrl}},[_vm._t("default")],2)}
 var staticRenderFns = []
 
@@ -11814,7 +11857,7 @@ function reachBottom(event, binding) {
 
 
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"80f591c0-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/addOption/index.vue?vue&type=template&id=25795dc4&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"ca2a9e2e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/addOption/index.vue?vue&type=template&id=25795dc4&
 var addOptionvue_type_template_id_25795dc4_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"client-add-options"},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.showDelete),expression:"showDelete"}],on:{"click":function($event){return _vm.handleClick('delete')}}},[_vm._t("delete")],2),_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.showAdd),expression:"showAdd"}],on:{"click":function($event){return _vm.handleClick('add')}}},[_vm._t("add")],2)])}
 var addOptionvue_type_template_id_25795dc4_staticRenderFns = []
 
@@ -11905,16 +11948,14 @@ var addOption_component = normalizeComponent(
 var dayjs_min = __webpack_require__("5a0c");
 var dayjs_min_default = /*#__PURE__*/__webpack_require__.n(dayjs_min);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"80f591c0-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/tableGroup/options.vue?vue&type=template&id=e6914556&
-var optionsvue_type_template_id_e6914556_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"table-header-options"},[_vm._l((_vm.options),function(option){return [(option.type === 'button')?_c('Button',{key:option.name,attrs:{"size":option.size ? option.size : "default","ghost":option.ghost || false,"type":option.buttonType || "primary","disabled":option.disabled},on:{"click":function($event){return _vm.handleOptionClick(option)}}},[_c('i',{staticClass:"iconfont",staticStyle:{"font-size":"12px"},domProps:{"innerHTML":_vm._s(option.icon)}}),_vm._v(" "+_vm._s(option.name)+" ")]):(option.type === 'upload')?_c('Upload',{key:option.name,attrs:{"accept":option.accept,"format":option.format,"show-upload-list":false,"action":option.action,"headers":_vm.header,"multiple":option.multiple,"data":option.data,"on-success":option.onSuccess,"on-error":option.onError,"maxSize":option.maxSize,"on-format-error":option.onFormatError,"on-exceeded-size":option.handleExceededSize || _vm.handleExceededSize}},[(option.render)?_c('RenderDom',{attrs:{"render":option.render}}):_c('Button',{staticStyle:{"color":"#FF9305"},attrs:{"type":"text"}},[_c('i',{staticClass:"iconfont",staticStyle:{"margin-right":"4px"},domProps:{"innerHTML":_vm._s(option.icon)}}),_vm._v(" "+_vm._s(option.name)+" ")])],1):_c('div',{key:option.name,staticClass:"client-button",on:{"click":function($event){return _vm.handleOptionClick(option)}}},[_c('i',{staticClass:"iconfont",domProps:{"innerHTML":_vm._s(option.icon)}}),_vm._v(" "+_vm._s(option.name)+" ")])]})],2)}
-var optionsvue_type_template_id_e6914556_staticRenderFns = []
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"ca2a9e2e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/tableGroup/options.vue?vue&type=template&id=91c40cf8&
+var optionsvue_type_template_id_91c40cf8_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"table-header-options"},[_vm._l((_vm.options),function(option){return [(option.type === 'button')?_c('Button',{key:option.name,attrs:{"size":option.size ? option.size : "default","ghost":option.ghost || false,"type":option.buttonType || "primary","disabled":option.disabled},on:{"click":function($event){return _vm.handleOptionClick(option)}}},[_c('i',{staticClass:"iconfont",staticStyle:{"font-size":"12px"},domProps:{"innerHTML":_vm._s(option.icon)}}),_vm._v(" "+_vm._s(option.name)+" ")]):(option.type === 'upload')?_c('Upload',{key:option.name,attrs:{"accept":option.accept,"format":option.format,"show-upload-list":false,"action":option.action,"headers":_vm.header,"multiple":option.multiple,"data":option.data,"on-success":option.onSuccess,"on-error":option.onError,"maxSize":option.maxSize,"on-format-error":option.onFormatError,"on-exceeded-size":option.handleExceededSize || _vm.handleExceededSize}},[(option.render)?_c('RenderDom',{attrs:{"render":option.render}}):_c('Button',{staticStyle:{"color":"#FF9305"},attrs:{"type":"text"}},[_c('i',{staticClass:"iconfont",staticStyle:{"margin-right":"4px"},domProps:{"innerHTML":_vm._s(option.icon)}}),_vm._v(" "+_vm._s(option.name)+" ")])],1):_c('div',{key:option.name,staticClass:"client-button",on:{"click":function($event){return _vm.handleOptionClick(option)}}},[_c('i',{staticClass:"iconfont",domProps:{"innerHTML":_vm._s(option.icon)}}),_vm._v(" "+_vm._s(option.name)+" ")])]})],2)}
+var optionsvue_type_template_id_91c40cf8_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/tableGroup/options.vue?vue&type=template&id=e6914556&
+// CONCATENATED MODULE: ./src/components/tableGroup/options.vue?vue&type=template&id=91c40cf8&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/tableGroup/options.vue?vue&type=script&lang=js&
-
-
 //
 //
 //
@@ -11984,7 +12025,8 @@ var optionsvue_type_template_id_e6914556_staticRenderFns = []
   methods: {
     // 点击操作按钮
     handleOptionClick: function handleOptionClick(option) {
-      var type = option.type; // 如果是导出 有已经选择的 那么取其中id 如果没有取response 的ids
+      var type = option.type,
+          exportUrl = option.exportUrl; // 如果是导出 有已经选择的 那么取其中id 如果没有取response 的ids
 
       if (type === 'export') {
         var selected = [];
@@ -11995,12 +12037,11 @@ var optionsvue_type_template_id_e6914556_staticRenderFns = []
           selected = [];
         }
 
-        var exportUrl = option.exportUrl;
         this.$Modal.confirm({
           content: "<p style='margin-top:32px;'>\u786E\u8BA4\u53D6\u6D88\u786E\u8BA4\u9700\u8981\u5BFC\u51FA\u3010".concat(selected.length, "\u6761\u3011\u4FE1\u606F\u4E48\uFF1F</p>"),
           onOk: function onOk() {
-            // TODO 导出增加params 传参
-            window.open("".concat(Object({"NODE_ENV":"production","BASE_URL":"/"}).BASE_API).concat(exportUrl, "?ids=").concat(selected.join(',')));
+            // 如果导出有参数 请在exportUrl 做修改
+            window.open(exportUrl);
           }
         });
         return;
@@ -12026,8 +12067,8 @@ var optionsvue_type_template_id_e6914556_staticRenderFns = []
 
 var options_component = normalizeComponent(
   tableGroup_optionsvue_type_script_lang_js_,
-  optionsvue_type_template_id_e6914556_render,
-  optionsvue_type_template_id_e6914556_staticRenderFns,
+  optionsvue_type_template_id_91c40cf8_render,
+  optionsvue_type_template_id_91c40cf8_staticRenderFns,
   false,
   null,
   null,
