@@ -134,7 +134,10 @@ function getQueryStringArgs() {
     const value = decodeURIComponent(item.split('=')[1])
     args[key] = value
   })
+  return args
+
 }
+
 /**
  * @description 是否滚动到底部
  * @param reachBottomValue 距离底部多少距离 触发函数

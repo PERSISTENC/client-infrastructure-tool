@@ -27,6 +27,12 @@
     "eslint-plugin-vue": "^6.2.2",
     "vue-template-compiler": "^2.6.11"
   },
+  "files": [
+    "types",
+    "src",
+    "dist"
+  ],
+  "typings": "types/index.d.ts",
   "eslintConfig": {
     "root": true,
     "env": {
