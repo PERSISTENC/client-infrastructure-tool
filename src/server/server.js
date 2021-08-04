@@ -106,6 +106,7 @@ class HttpServer {
             if(this._isLoading && this._loadingBeginTime === 0){
                 setTimeout(() => {
                     if (this._taskQueue.length !== 0) {
+                        // TODO 这里应该判断下 当前是否运行过loading 否则loadingHide 会在每次结束请求 就会运行一次  这是不合理的 
                         this._loadingShow && this._loadingShow()
                         this._loadingBeginTime = new Date().getTime()
                     }
