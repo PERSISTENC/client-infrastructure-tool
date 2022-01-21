@@ -171,15 +171,18 @@ function onReachBottom(node, reachBottomData = {}) {
   } else {
     node.addEventListener('scroll', onScroll)
   }
-
-
-
-
-
-
-
-
-
+}
+/**
+ * 
+ * @param {string} text 传入要复制的文本 
+ */
+function copy(text) {
+  var input = document.createElement("input");   // 直接构建input
+  input.value = text;  // 设置内容
+  document.body.appendChild(input);    // 添加临时实例
+  input.select();   // 选择实例内容
+  document.execCommand("Copy");   // 执行复制
+  document.body.removeChild(input); // 删除临时实例
 }
 
 /**
@@ -202,4 +205,5 @@ export {
   isIos,
   excelDownloadWindow,
   onReachBottom,
+  copy,
 }
